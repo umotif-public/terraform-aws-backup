@@ -1,0 +1,143 @@
+#####
+# Backup Vault
+#####
+resource "aws_backup_vault" "main" {
+  count = var.enabled && var.vault_name != null ? 1 : 0
+
+  name        = var.vault_name
+  kms_key_arn = var.vault_kms_key_arn
+  tags        = var.tags
+}
+
+#####
+# Backup Plan
+#####
+resource "aws_backup_plan" "main" {
+  count = var.enabled ? 1 : 0
+
+  name = var.plan_name
+
+  dynamic "rule" {
+    for_each = local.rules
+    content {
+      rule_name           = lookup(rule.value, "name", null)
+      target_vault_name   = lookup(rule.value, "target_vault_name", null) == null ? var.vault_name : lookup(rule.value, "target_vault_name", "Default")
+      schedule            = lookup(rule.value, "schedule", null)
+      start_window        = lookup(rule.value, "start_window", null)
+      completion_window   = lookup(rule.value, "completion_window ", null)
+      recovery_point_tags = length(lookup(rule.value, "recovery_point_tags")) == 0 ? var.tags : lookup(rule.value, "recovery_point_tags")
+
+      dynamic "lifecycle" {
+        for_each = length(lookup(rule.value, "lifecycle")) == 0 ? [] : [lookup(rule.value, "lifecycle", {})]
+        content {
+          cold_storage_after = lookup(lifecycle.value, "cold_storage_after", 0)
+          delete_after       = lookup(lifecycle.value, "delete_after", 90)
+        }
+      }
+
+      dynamic "copy_action" {
+        for_each = length(lookup(rule.value, "copy_action", {})) == 0 ? [] : [lookup(rule.value, "copy_action", {})]
+        content {
+          destination_vault_arn = lookup(copy_action.value, "destination_vault_arn", null)
+
+          dynamic "lifecycle" {
+            for_each = length(lookup(copy_action.value, "lifecycle", {})) == 0 ? [] : [lookup(copy_action.value, "lifecycle", {})]
+            content {
+              cold_storage_after = lookup(lifecycle.value, "cold_storage_after", 0)
+              delete_after       = lookup(lifecycle.value, "delete_after", 90)
+            }
+          }
+        }
+      }
+
+    }
+  }
+
+  tags = var.tags
+
+  depends_on = [aws_backup_vault.main]
+}
+
+#####
+# Backup Selection
+#####
+resource "aws_backup_selection" "main" {
+  count = var.enabled ? length(local.selections) : 0
+
+  iam_role_arn = aws_iam_role.main[0].arn
+  name         = lookup(element(local.selections, count.index), "name", null)
+  plan_id      = aws_backup_plan.main[0].id
+
+  resources = lookup(element(local.selections, count.index), "resources")
+
+  dynamic "selection_tag" {
+    for_each = length(lookup(element(local.selections, count.index), "selection_tag", {})) == 0 ? [] : [lookup(element(local.selections, count.index), "selection_tag", {})]
+    content {
+      type  = lookup(selection_tag.value, "type", null)
+      key   = lookup(selection_tag.value, "key", null)
+      value = lookup(selection_tag.value, "value", null)
+    }
+  }
+}
+
+#####
+# IAM Role
+#####
+resource "aws_iam_role" "main" {
+  count              = var.enabled ? 1 : 0
+  name               = "aws-backup-plan-${var.plan_name}-role"
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": ["sts:AssumeRole"],
+      "Effect": "allow",
+      "Principal": {
+        "Service": ["backup.amazonaws.com"]
+      }
+    }
+  ]
+}
+POLICY
+
+  tags = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "main_role_policy_attach" {
+  count = var.enabled ? 1 : 0
+
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup"
+  role       = aws_iam_role.main[0].name
+}
+
+resource "aws_iam_policy" "main_custom_policy" {
+  count = var.enabled ? 1 : 0
+
+  description = "AWS Backup Tag policy"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "backup:TagResource",
+        "backup:ListTags",
+        "backup:UntagResource",
+        "tag:GetResources"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "main_custom_policy_attach" {
+  count = var.enabled ? 1 : 0
+
+  policy_arn = aws_iam_policy.main_custom_policy[0].arn
+  role       = aws_iam_role.main[0].name
+}
