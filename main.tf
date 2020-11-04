@@ -20,11 +20,11 @@ resource "aws_backup_plan" "main" {
   dynamic "rule" {
     for_each = local.rules
     content {
-      rule_name           = lookup(rule.value, "name", null)
+      rule_name           = lookup(rule.value, "name")
       target_vault_name   = lookup(rule.value, "target_vault_name", null) == null ? var.vault_name : lookup(rule.value, "target_vault_name", "Default")
       schedule            = lookup(rule.value, "schedule", null)
       start_window        = lookup(rule.value, "start_window", null)
-      completion_window   = lookup(rule.value, "completion_window ", null)
+      completion_window   = lookup(rule.value, "completion_window", null)
       recovery_point_tags = length(lookup(rule.value, "recovery_point_tags")) == 0 ? var.tags : lookup(rule.value, "recovery_point_tags")
 
       dynamic "lifecycle" {
@@ -43,13 +43,22 @@ resource "aws_backup_plan" "main" {
           dynamic "lifecycle" {
             for_each = length(lookup(copy_action.value, "lifecycle", {})) == 0 ? [] : [lookup(copy_action.value, "lifecycle", {})]
             content {
-              cold_storage_after = lookup(lifecycle.value, "cold_storage_after", 0)
-              delete_after       = lookup(lifecycle.value, "delete_after", 90)
+              cold_storage_after = lookup(lifecycle.value, "copy_action_cold_storage_after", 0)
+              delete_after       = lookup(lifecycle.value, "copy_action_delete_after", 90)
             }
           }
         }
       }
+    }
+  }
 
+  dynamic "advanced_backup_setting" {
+    for_each = var.advanced_backup_settings
+    content {
+      resource_type = lookup(advanced_backup_setting.value, "resource_type", "EC2")
+      backup_options = {
+        WindowsVSS = lookup(advanced_backup_setting.value, "backup_options", "enabled")
+      }
     }
   }
 
