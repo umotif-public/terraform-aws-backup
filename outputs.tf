@@ -3,17 +3,17 @@
 #####
 output "backup_vault_id" {
   description = "The name of the AWS Backup Vault"
-  value       = aws_backup_vault.main[0].id
+  value       = var.vault_name != null ? concat(aws_backup_vault.main[*].id, [""])[0] : null
 }
 
 output "backup_vault_arn" {
   description = "The Amazon Resource Name (ARN) that identifies the AWS Backup Vault"
-  value       = aws_backup_vault.main[0].arn
+  value       = var.vault_name != null ? concat(aws_backup_vault.main[*].arn, [""])[0] : null
 }
 
 output "backup_vault_recovery_points" {
   description = "The number of recovery points that are stored in a backup vault"
-  value       = aws_backup_vault.main[0].recovery_points
+  value       = var.vault_name != null ? concat(aws_backup_vault.main[*].recovery_points, [""])[0] : null
 }
 
 #####
@@ -41,5 +41,5 @@ output "backup_plan_version" {
 
 output "backup_selection_id" {
   description = "The identifier of the backup selection"
-  value       = aws_backup_selection.main[*].id
+  value       = concat(aws_backup_selection.main[*].id, [""])[0]
 }

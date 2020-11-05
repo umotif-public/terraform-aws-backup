@@ -1,3 +1,9 @@
+variable "iam_role_name" {
+  description = "Name of IAM Role to associate to the Backup Plan"
+  type        = string
+  default     = null
+}
+
 # Rules
 variable "rules" {
   description = "A list of rules mapping rule configurations for a backup plan"
@@ -71,7 +77,6 @@ variable "plan_name" {
   type        = string
 }
 
-# Default rule
 variable "rule_name" {
   description = "An display name for a backup rule"
   type        = string

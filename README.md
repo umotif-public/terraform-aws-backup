@@ -13,7 +13,7 @@ module "backup" {
   version = "~> 1.0.0"
 
   vault_name        = "test-rds-aurora"
-  vault_kms_key_arn = module.kms-backup.key_arn
+  vault_kms_key_arn = "arn:aws:kms:eu-west-1:1111111111:key/07a8a813-fcc9-4d7f-a982648d9c25"
 
   tags = {
     Environment = "test"
@@ -44,7 +44,7 @@ module "backup" {
     {
       name = "test-backup-selection"
       resources = [
-        module.aurora.rds_cluster_arn
+        "arn:aws:rds:eu-west-1:1111111111:cluster:example-database-1"
       ]
 
       selection_tag = {
@@ -75,7 +75,7 @@ Module managed by [Marcin Cuber](https://github.com/marcincuber) [LinkedIn](http
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.13.5 |
+| terraform | >= 0.13 |
 | aws | >= 3.11 |
 
 ## Providers
@@ -89,6 +89,7 @@ Module managed by [Marcin Cuber](https://github.com/marcincuber) [LinkedIn](http
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | advanced\_backup\_settings | An object that specifies backup options for each resource type | `any` | `[]` | no |
+| iam\_role\_name | Name of IAM Role to associate to the Backup Plan | `string` | `null` | no |
 | plan\_name | The display name of a backup plan | `string` | n/a | yes |
 | rule\_completion\_window | The amount of time AWS Backup attempts a backup before canceling the job and returning an error | `number` | `null` | no |
 | rule\_copy\_action\_destination\_vault\_arn | An Amazon Resource Name (ARN) that uniquely identifies the destination backup vault for the copied backup. | `string` | `null` | no |

@@ -61,8 +61,6 @@ resource "aws_backup_plan" "main" {
   }
 
   tags = var.tags
-
-  depends_on = [aws_backup_vault.main]
 }
 
 #####
@@ -91,7 +89,7 @@ resource "aws_backup_selection" "main" {
 # IAM Role
 #####
 resource "aws_iam_role" "main" {
-  name               = "aws-backup-plan-${var.plan_name}-role"
+  name               = var.iam_role_name != null ? var.iam_role_name : "aws-backup-plan-${var.plan_name}-role"
   assume_role_policy = <<POLICY
 {
   "Version": "2012-10-17",
@@ -123,6 +121,7 @@ resource "aws_iam_policy" "main_custom_policy" {
   "Version": "2012-10-17",
   "Statement": [
     {
+      "Sid": "AllowTaggingResources",
       "Effect": "Allow",
       "Action": [
         "backup:TagResource",
