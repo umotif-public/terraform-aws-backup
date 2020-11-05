@@ -1,6 +1,6 @@
 # Rules
 variable "rules" {
-  description = "A list of rule maps"
+  description = "A list of rules mapping rule configurations for a backup plan"
   type        = any
   default     = []
 }
@@ -40,12 +40,6 @@ variable "selections" {
   description = "A list of selection maps"
   type        = list
   default     = []
-}
-
-variable "enabled" {
-  description = "Change to false to avoid deploying any AWS Backup resources"
-  type        = bool
-  default     = true
 }
 
 #

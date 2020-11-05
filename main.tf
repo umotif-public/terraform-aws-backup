@@ -2,7 +2,7 @@
 # Backup Vault
 #####
 resource "aws_backup_vault" "main" {
-  count = var.enabled && var.vault_name != null ? 1 : 0
+  count = var.vault_name != null ? 1 : 0
 
   name        = var.vault_name
   kms_key_arn = var.vault_kms_key_arn
@@ -13,12 +13,10 @@ resource "aws_backup_vault" "main" {
 # Backup Plan
 #####
 resource "aws_backup_plan" "main" {
-  count = var.enabled ? 1 : 0
-
   name = var.plan_name
 
   dynamic "rule" {
-    for_each = local.rules
+    for_each = var.rules
     content {
       rule_name           = lookup(rule.value, "name")
       target_vault_name   = lookup(rule.value, "target_vault_name", null) == null ? var.vault_name : lookup(rule.value, "target_vault_name", "Default")
@@ -71,16 +69,16 @@ resource "aws_backup_plan" "main" {
 # Backup Selection
 #####
 resource "aws_backup_selection" "main" {
-  count = var.enabled ? length(local.selections) : 0
+  count = length(var.selections) >= 1 ? length(var.selections) : 0
 
-  iam_role_arn = aws_iam_role.main[0].arn
-  name         = lookup(element(local.selections, count.index), "name", null)
-  plan_id      = aws_backup_plan.main[0].id
+  iam_role_arn = aws_iam_role.main.arn
+  name         = lookup(element(var.selections, count.index), "name", null)
+  plan_id      = aws_backup_plan.main.id
 
-  resources = lookup(element(local.selections, count.index), "resources")
+  resources = lookup(element(var.selections, count.index), "resources")
 
   dynamic "selection_tag" {
-    for_each = length(lookup(element(local.selections, count.index), "selection_tag", {})) == 0 ? [] : [lookup(element(local.selections, count.index), "selection_tag", {})]
+    for_each = length(lookup(element(var.selections, count.index), "selection_tag", {})) == 0 ? [] : [lookup(element(var.selections, count.index), "selection_tag", {})]
     content {
       type  = lookup(selection_tag.value, "type", null)
       key   = lookup(selection_tag.value, "key", null)
@@ -93,7 +91,6 @@ resource "aws_backup_selection" "main" {
 # IAM Role
 #####
 resource "aws_iam_role" "main" {
-  count              = var.enabled ? 1 : 0
   name               = "aws-backup-plan-${var.plan_name}-role"
   assume_role_policy = <<POLICY
 {
@@ -114,15 +111,11 @@ POLICY
 }
 
 resource "aws_iam_role_policy_attachment" "main_role_policy_attach" {
-  count = var.enabled ? 1 : 0
-
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup"
-  role       = aws_iam_role.main[0].name
+  role       = aws_iam_role.main.name
 }
 
 resource "aws_iam_policy" "main_custom_policy" {
-  count = var.enabled ? 1 : 0
-
   description = "AWS Backup Tag policy"
 
   policy = <<EOF
@@ -145,8 +138,6 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "main_custom_policy_attach" {
-  count = var.enabled ? 1 : 0
-
-  policy_arn = aws_iam_policy.main_custom_policy[0].arn
-  role       = aws_iam_role.main[0].name
+  policy_arn = aws_iam_policy.main_custom_policy.arn
+  role       = aws_iam_role.main.name
 }

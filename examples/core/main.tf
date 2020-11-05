@@ -77,50 +77,6 @@ module "kms-rds" {
   }
 }
 
-module "kms-cloudwatch" {
-  source  = "umotif-public/kms/aws"
-  version = "~> 1.0"
-
-  alias_name              = "cloudwatch-kms-test-key"
-  deletion_window_in_days = 7
-  enable_key_rotation     = true
-  policy = jsonencode(
-    {
-      "Version" : "2012-10-17",
-      "Statement" : [
-        {
-          "Sid" : "Enable IAM User Permissions",
-          "Effect" : "Allow",
-          "Principal" : {
-            "AWS" : [
-              "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
-              data.aws_caller_identity.current.arn
-            ]
-          },
-          "Action" : "kms:*",
-          "Resource" : "*"
-        },
-        {
-          "Effect" : "Allow",
-          "Principal" : { "Service" : "logs.${data.aws_region.current.name}.amazonaws.com" },
-          "Action" : [
-            "kms:Encrypt*",
-            "kms:Decrypt*",
-            "kms:ReEncrypt*",
-            "kms:GenerateDataKey*",
-            "kms:Describe*"
-          ],
-          "Resource" : "*"
-        }
-      ]
-    }
-  )
-
-  tags = {
-    Environment = "test"
-  }
-}
-
 module "kms-backup" {
   source  = "umotif-public/kms/aws"
   version = "~> 1.0"
@@ -174,57 +130,18 @@ module "kms-backup" {
 module "aurora" {
   source = "umotif-public/rds-aurora/aws"
 
-  name_prefix         = "example-aurora-mysql"
-  database_name       = "databaseName"
-  engine              = "aurora-mysql"
-  engine_version      = "5.7.mysql_aurora.2.09.0"
-  deletion_protection = false
+  name_prefix   = "example-aurora-mysql"
+  database_name = "databaseName"
+  engine        = "aurora-mysql"
 
   vpc_id  = module.vpc.vpc_id
   subnets = module.vpc.public_subnets
 
   kms_key_id = module.kms-rds.key_arn
 
-  replica_count               = 1
-  instance_type               = "db.t3.medium"
-  apply_immediately           = true
-  allow_major_version_upgrade = true
-  skip_final_snapshot         = true
-
-  iam_database_authentication_enabled = true
-
-  enabled_cloudwatch_logs_exports = [
-    {
-      name              = "audit",
-      retention_in_days = "60"
-      kms_key_id        = module.kms-cloudwatch.key_arn
-    },
-    {
-      name       = "error"
-      kms_key_id = module.kms-cloudwatch.key_arn
-    },
-    {
-      name              = "general",
-      retention_in_days = "30"
-    },
-    {
-      name = "slowquery",
-    }
-  ]
+  instance_type = "db.t3.medium"
 
   allowed_cidr_blocks = ["10.10.0.0/24", "10.20.0.0/24", "10.30.0.0/24"]
-
-  monitoring_interval = 60
-
-  create_security_group = true
-
-  cluster_tags = {
-    "cluster_tags" = "example cluster main"
-  }
-
-  cluster_instance_tags = {
-    "cluster_instance_tags" = "example of cluster instance tags"
-  }
 
   tags = {
     Environment = "test"
@@ -235,7 +152,6 @@ module "backup" {
   source = "../.."
 
   # Create a Vault
-  enabled           = true
   vault_name        = "test-rds-aurora"
   vault_kms_key_arn = module.kms-backup.key_arn
 
@@ -259,21 +175,11 @@ module "backup" {
       }
 
       lifecycle = {
-        cold_storage_after = 1
-        delete_after       = 92
-      }
-
-      copy_action = {
-        destination_vault_arn = "arn:aws:backup:us-east-1:238957866604:backup-vault:Default"
-        lifecycle = {
-          copy_action_cold_storage_after = 0
-          copy_action_delete_after       = 90
-        }
+        cold_storage_after = 0
+        delete_after       = 90
       }
     }
   ]
-
-  advanced_backup_settings = []
 
   selections = [
     {
