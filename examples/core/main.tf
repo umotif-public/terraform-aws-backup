@@ -148,6 +148,9 @@ module "aurora" {
   }
 }
 
+#########
+# Backup
+#########
 module "backup" {
   source = "../.."
 

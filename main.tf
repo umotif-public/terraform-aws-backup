@@ -73,7 +73,7 @@ resource "aws_backup_selection" "main" {
   name         = lookup(element(var.selections, count.index), "name", null)
   plan_id      = aws_backup_plan.main.id
 
-  resources = lookup(element(var.selections, count.index), "resources")
+  resources = lookup(element(var.selections, count.index), "resources", null)
 
   dynamic "selection_tag" {
     for_each = length(lookup(element(var.selections, count.index), "selection_tag", {})) == 0 ? [] : [lookup(element(var.selections, count.index), "selection_tag", {})]
