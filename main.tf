@@ -53,10 +53,8 @@ resource "aws_backup_plan" "main" {
   dynamic "advanced_backup_setting" {
     for_each = var.advanced_backup_settings
     content {
-      resource_type = lookup(advanced_backup_setting.value, "resource_type", "EC2")
-      backup_options = {
-        WindowsVSS = lookup(advanced_backup_setting.value, "backup_options", "enabled")
-      }
+      resource_type  = lookup(advanced_backup_setting.value, "resource_type", "EC2")
+      backup_options = lookup(advanced_backup_setting.value, "backup_options", null)
     }
   }
 

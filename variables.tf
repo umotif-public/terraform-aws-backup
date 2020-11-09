@@ -19,8 +19,8 @@ variable "selection_name" {
 }
 
 variable "selection_resources" {
-  description = "An array of strings that either contain Amazon Resource Names (ARNs) or match patterns of resources to assign to a backup plan"
-  type        = list
+  description = "A list of strings that either contain Amazon Resource Names (ARNs) or match patterns of resources to assign to a backup plan"
+  type        = list(string)
   default     = []
 }
 

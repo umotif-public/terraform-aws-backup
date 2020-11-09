@@ -63,12 +63,15 @@ Module is to be used with Terraform > 0.13.
 
 ## Examples
 
-* [Backup with Aurora MySQL](https://github.com/umotif-public/terraform-aws-backup/tree/master/examples/core)
+* [Backup with Aurora MySQL](https://github.com/umotif-public/terraform-aws-backup/tree/master/examples/one-db)
 * [Backup with Aurora MySQL and Aurora PostgreSQL](https://github.com/umotif-public/terraform-aws-backup/tree/master/examples/multiple-dbs)
+* [Backup with an externally created Vault](https://github.com/umotif-public/terraform-aws-backup/tree/master/examples/external-vault)
 
 ## Authors
 
-Module managed by [Marcin Cuber](https://github.com/marcincuber) [LinkedIn](https://www.linkedin.com/in/marcincuber/) and [Abdul Wahid](https://github.com/Ohid25) [LinkedIn](https://www.linkedin.com/in/abdul-wahid/).
+Module managed by:
+* [Marcin Cuber](https://github.com/marcincuber) [LinkedIn](https://www.linkedin.com/in/marcincuber/)
+* [Abdul Wahid](https://github.com/Ohid25) [LinkedIn](https://www.linkedin.com/in/abdul-wahid/)
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
@@ -102,7 +105,7 @@ Module managed by [Marcin Cuber](https://github.com/marcincuber) [LinkedIn](http
 | rule\_start\_window | The amount of time in minutes before beginning a backup | `number` | `null` | no |
 | rules | A list of rules mapping rule configurations for a backup plan | `any` | `[]` | no |
 | selection\_name | The display name of a resource selection document | `string` | `null` | no |
-| selection\_resources | An array of strings that either contain Amazon Resource Names (ARNs) or match patterns of resources to assign to a backup plan | `list` | `[]` | no |
+| selection\_resources | A list of strings that either contain Amazon Resource Names (ARNs) or match patterns of resources to assign to a backup plan | `list(string)` | `[]` | no |
 | selection\_tag\_key | The key in a key-value pair | `string` | `null` | no |
 | selection\_tag\_type | An operation, such as StringEquals, that is applied to a key-value pair used to filter resources in a selection | `string` | `null` | no |
 | selection\_tag\_value | The value in a key-value pair | `string` | `null` | no |
