@@ -2,16 +2,6 @@
 
 All notable changes to this project will be documented in this file.
 
-<a name="unreleased"></a>
-## [Unreleased]
-
-- Fix target_vault_name should be referencing a resource and not a variable
-- Add comment for depends_on
-- Use resource and not variable for 'depends_on'
-- Add changelog
-- Add depends on to fix the occasional race condition
-
-
 <a name="1.0.0"></a>
 ## 1.0.0 - 2020-11-09
 

@@ -19,7 +19,7 @@ resource "aws_backup_plan" "main" {
     for_each = var.rules
     content {
       rule_name           = lookup(rule.value, "name")
-      target_vault_name   = lookup(rule.value, "target_vault_name", null) == null ? aws_backup_vault.main.name : lookup(rule.value, "target_vault_name", "Default")
+      target_vault_name   = lookup(rule.value, "target_vault_name", null) == null ? aws_backup_vault.main[0].name : lookup(rule.value, "target_vault_name", "Default")
       schedule            = lookup(rule.value, "schedule", null)
       start_window        = lookup(rule.value, "start_window", null)
       completion_window   = lookup(rule.value, "completion_window", null)
