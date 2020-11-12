@@ -19,7 +19,7 @@ resource "aws_backup_plan" "main" {
     for_each = var.rules
     content {
       rule_name           = lookup(rule.value, "name")
-      target_vault_name   = lookup(rule.value, "target_vault_name", null) == null ? var.vault_name : lookup(rule.value, "target_vault_name", "Default")
+      target_vault_name   = lookup(rule.value, "target_vault_name", null) == null ? aws_backup_vault.main.name : lookup(rule.value, "target_vault_name", "Default")
       schedule            = lookup(rule.value, "schedule", null)
       start_window        = lookup(rule.value, "start_window", null)
       completion_window   = lookup(rule.value, "completion_window", null)
@@ -59,9 +59,6 @@ resource "aws_backup_plan" "main" {
   }
 
   tags = var.tags
-
-  # There is on occasion where the vault is not created before the plan is being attempted to be created. This depends on is here to fix that 'race condition'.
-  depends_on = [aws_backup_vault.main]
 }
 
 #####
