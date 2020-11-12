@@ -106,4 +106,6 @@ module "backup" {
   tags = {
     Environment = "test"
   }
+
+  depends_on = [aws_backup_vault.external_vault]
 }
