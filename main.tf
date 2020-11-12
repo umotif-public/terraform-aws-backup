@@ -59,6 +59,8 @@ resource "aws_backup_plan" "main" {
   }
 
   tags = var.tags
+
+  depends_on = [var.vault_name]
 }
 
 #####
