@@ -60,6 +60,7 @@ resource "aws_backup_plan" "main" {
 
   tags = var.tags
 
+  # There is on occasion where the vault is not created before the plan is being attempted to be created. This depends on is here to fix that 'race condition'.
   depends_on = [aws_backup_vault.main]
 }
 
