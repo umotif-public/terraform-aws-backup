@@ -48,6 +48,12 @@ variable "selections" {
   default     = []
 }
 
+variable "selection_tags" {
+  description = "A list of selection tags map"
+  type        = list
+  default     = []
+}
+
 #
 # AWS Backup vault
 #

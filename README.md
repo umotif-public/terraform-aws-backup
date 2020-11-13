@@ -108,6 +108,7 @@ Module managed by:
 | selection\_tag\_key | The key in a key-value pair | `string` | `null` | no |
 | selection\_tag\_type | An operation, such as StringEquals, that is applied to a key-value pair used to filter resources in a selection | `string` | `null` | no |
 | selection\_tag\_value | The value in a key-value pair | `string` | `null` | no |
+| selection\_tags | A list of selection tags map | `list` | `[]` | no |
 | selections | A list of selection maps | `list` | `[]` | no |
 | tags | A mapping of tags to assign to the resource | `map(string)` | `{}` | no |
 | vault\_kms\_key\_arn | The server-side encryption key that is used to protect your backups | `string` | `null` | no |
