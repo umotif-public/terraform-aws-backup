@@ -168,7 +168,6 @@ module "backup" {
   rules = [
     {
       name              = "test-backup-rule"
-      target_vault_name = "test-rds-aurora"
       schedule          = "cron(0 12 * * ? *)"
       start_window      = "65"
       completion_window = "180"
