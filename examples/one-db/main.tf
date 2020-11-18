@@ -195,7 +195,7 @@ module "backup" {
     {
       type  = "STRINGEQUALS"
       key   = "Environment"
-      value = "int"
+      value = "test"
     }
   ]
 }

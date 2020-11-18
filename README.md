@@ -39,18 +39,19 @@ module "backup" {
     }
   ]
 
-  selections = [
-    {
-      name = "test-backup-selection"
-      resources = [
-        "arn:aws:rds:eu-west-1:1111111111:cluster:example-database-1"
-      ]
+  selection_name = "test-backup-selection"
+  selection_resources = ["arn:aws:rds:eu-west-1:1111111111:cluster:example-dataabase-1"]
 
-      selection_tag = {
-        type  = "STRINGEQUALS"
-        key   = "Environment"
-        value = "test"
-      }
+  selection_tags = [
+    {
+      type  = "STRINGEQUALS"
+      key   = "Project"
+      value = "Test"
+    },
+    {
+      type  = "STRINGEQUALS"
+      key   = "Environment"
+      value = "test"
     }
   ]
 }
