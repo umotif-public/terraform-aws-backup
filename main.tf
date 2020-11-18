@@ -65,16 +65,14 @@ resource "aws_backup_plan" "main" {
 # Backup Selection
 #####
 resource "aws_backup_selection" "main" {
-  count = length(var.selections) >= 1 ? length(var.selections) : 0
-
   iam_role_arn = aws_iam_role.main.arn
-  name         = lookup(element(var.selections, count.index), "name", null)
+  name         = var.selection_name
   plan_id      = aws_backup_plan.main.id
 
-  resources = lookup(element(var.selections, count.index), "resources", null)
+  resources = var.selection_resources
 
   dynamic "selection_tag" {
-    for_each = length(lookup(element(var.selections, count.index), "selection_tags", {})) == 0 ? [] : [lookup(element(var.selections, count.index), "selection_tags", {})]
+    for_each = var.selection_tags
     content {
       type  = lookup(selection_tag.value, "type", null)
       key   = lookup(selection_tag.value, "key", null)

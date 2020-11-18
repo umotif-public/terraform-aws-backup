@@ -92,14 +92,18 @@ module "backup" {
     }
   ]
 
-  selections = [
+  selection_name = "test-backup-selection"
+
+  selection_tags = [
     {
-      name = "test-backup-selection"
-      selection_tag = {
-        type  = "STRINGEQUALS"
-        key   = "Environment"
-        value = "test"
-      }
+      type  = "STRINGEQUALS"
+      key   = "Project"
+      value = "Test"
+    },
+    {
+      type  = "STRINGEQUALS"
+      key   = "Environment"
+      value = "test"
     }
   ]
 
