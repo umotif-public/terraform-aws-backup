@@ -183,18 +183,19 @@ module "backup" {
     }
   ]
 
-  selections = [
-    {
-      name = "test-backup-selection"
-      resources = [
-        module.aurora.rds_cluster_arn
-      ]
+  selection_name      = "test-backup-selection"
+  selection_resources = [module.aurora.rds_cluster_arn]
 
-      selection_tag = {
-        type  = "STRINGEQUALS"
-        key   = "Environment"
-        value = "test"
-      }
+  selection_tags = [
+    {
+      type  = "STRINGEQUALS"
+      key   = "Project"
+      value = "Test"
+    },
+    {
+      type  = "STRINGEQUALS"
+      key   = "Environment"
+      value = "test"
     }
   ]
 }

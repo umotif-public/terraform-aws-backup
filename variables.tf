@@ -42,8 +42,8 @@ variable "selection_tag_value" {
   default     = null
 }
 
-variable "selections" {
-  description = "A list of selection maps"
+variable "selection_tags" {
+  description = "A list of selection tags map"
   type        = list
   default     = []
 }
