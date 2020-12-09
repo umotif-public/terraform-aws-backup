@@ -8,116 +8,124 @@ data "aws_region" "current" {}
 #####
 # VPC and subnets
 #####
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 2.62"
+data "aws_vpc" "default" {
+  default = true
+}
 
-  name = "simple-vpc"
+data "aws_subnet_ids" "all" {
+  vpc_id = data.aws_vpc.default.id
+}
 
-  cidr = "10.0.0.0/16"
-
-  azs             = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
-  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
-
-  enable_nat_gateway = false
-
-  tags = {
-    Environment = "test"
-  }
+data "aws_subnet" "example" {
+  for_each = data.aws_subnet_ids.all.ids
+  id       = each.value
 }
 
 #############
 # KMS key
 #############
-module "kms-rds" {
-  source  = "umotif-public/kms/aws"
-  version = "~> 1.0"
+data "aws_iam_policy_document" "rds" {
+  statement {
+    sid = "EnableAllActionsIAM"
 
-  alias_name              = "rds-kms-test-key"
-  deletion_window_in_days = 7
-  enable_key_rotation     = true
-  policy = jsonencode(
-    {
-      "Version" : "2012-10-17",
-      "Statement" : [
-        {
-          "Sid" : "Enable IAM User Permissions",
-          "Effect" : "Allow",
-          "Principal" : {
-            "AWS" : [
-              "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
-              data.aws_caller_identity.current.arn
-            ]
-          },
-          "Action" : "kms:*",
-          "Resource" : "*"
-        },
-        {
-          "Sid" : "Allow use of the key",
-          "Effect" : "Allow",
-          "Principal" : {
-            "Service" : ["rds.amazonaws.com", "monitoring.rds.amazonaws.com"]
-          },
-          "Action" : [
-            "kms:Encrypt",
-            "kms:Decrypt",
-            "kms:ReEncrypt*",
-            "kms:GenerateDataKey*",
-            "kms:DescribeKey"
-          ],
-          "Resource" : "*"
-        }
+    actions = ["kms:*"]
+
+    resources = ["*"]
+
+    principals {
+      type = "AWS"
+      identifiers = [
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
+        data.aws_caller_identity.current.arn
       ]
     }
-  )
+  }
+
+  statement {
+    sid = "AllowBasicActionsRDSservices"
+
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:DescribeKey"
+    ]
+
+    resources = ["*"]
+
+    principals {
+      type = "Service"
+      identifiers = [
+        "rds.amazonaws.com",
+        "monitoring.rds.amazonaws.com"
+      ]
+    }
+  }
+}
+
+module "kms_rds" {
+  source  = "umotif-public/kms/aws"
+  version = "~> 1.0.2"
+
+  alias_name              = "${var.name_prefix}-rds"
+  deletion_window_in_days = 7
+  enable_key_rotation     = true
+  policy                  = data.aws_iam_policy_document.rds.json
 
   tags = {
     Environment = "test"
   }
 }
 
-module "kms-backup" {
-  source  = "umotif-public/kms/aws"
-  version = "~> 1.0"
+data "aws_iam_policy_document" "backup" {
+  statement {
+    sid = "EnableAllActionsIAM"
 
-  alias_name              = "backup-kms-test-key"
-  deletion_window_in_days = 7
-  enable_key_rotation     = true
-  policy = jsonencode(
-    {
-      "Version" : "2012-10-17",
-      "Statement" : [
-        {
-          "Sid" : "Enable IAM User Permissions",
-          "Effect" : "Allow",
-          "Principal" : {
-            "AWS" : [
-              "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
-              data.aws_caller_identity.current.arn
-            ]
-          },
-          "Action" : "kms:*",
-          "Resource" : "*"
-        },
-        {
-          "Sid" : "Allow use of the key",
-          "Effect" : "Allow",
-          "Principal" : {
-            "Service" : ["backup.amazonaws.com"]
-          },
-          "Action" : [
-            "kms:Encrypt",
-            "kms:Decrypt",
-            "kms:ReEncrypt*",
-            "kms:GenerateDataKey*",
-            "kms:DescribeKey"
-          ],
-          "Resource" : "*"
-        }
+    actions = ["kms:*"]
+
+    resources = ["*"]
+
+    principals {
+      type = "AWS"
+      identifiers = [
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
+        data.aws_caller_identity.current.arn
       ]
     }
-  )
+  }
+
+  statement {
+    sid = "AllowBasicActionsBackupService"
+
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:DescribeKey"
+    ]
+
+    resources = ["*"]
+
+    principals {
+      type = "Service"
+      identifiers = [
+        "backup.amazonaws.com"
+      ]
+    }
+  }
+}
+
+module "kms_backup" {
+  source  = "umotif-public/kms/aws"
+  version = "~> 1.0.2"
+
+  alias_name              = "${var.name_prefix}-backup"
+  deletion_window_in_days = 7
+  enable_key_rotation     = true
+
+  policy = data.aws_iam_policy_document.backup.json
 
   tags = {
     Environment = "test"
@@ -130,18 +138,18 @@ module "kms-backup" {
 module "aurora" {
   source = "umotif-public/rds-aurora/aws"
 
-  name_prefix   = "example-aurora-mysql"
-  database_name = "databaseName"
+  name_prefix   = "${var.name_prefix}-aurora-mysql"
+  database_name = "${var.name_prefix}mysqldb"
   engine        = "aurora-mysql"
 
-  vpc_id  = module.vpc.vpc_id
-  subnets = module.vpc.public_subnets
+  vpc_id  = data.aws_vpc.default.id
+  subnets = data.aws_subnet_ids.all.ids
 
-  kms_key_id = module.kms-rds.key_arn
+  kms_key_id = module.kms_rds.key_arn
 
   instance_type = "db.t3.medium"
 
-  allowed_cidr_blocks = ["10.10.0.0/24", "10.20.0.0/24", "10.30.0.0/24"]
+  allowed_cidr_blocks = [for s in data.aws_subnet.example : s.cidr_block]
 
   tags = {
     Environment = "test"
@@ -155,19 +163,19 @@ module "backup" {
   source = "../.."
 
   # Create a Vault
-  vault_name        = "test-rds-aurora"
-  vault_kms_key_arn = module.kms-backup.key_arn
+  vault_name        = "${var.name_prefix}-rds-aurora"
+  vault_kms_key_arn = module.kms_backup.key_arn
 
   tags = {
     Environment = "test"
   }
 
   # Create a backup plan
-  plan_name = "test-backup-plan"
+  plan_name = "${var.name_prefix}-backup-plan"
 
   rules = [
     {
-      name              = "test-backup-rule"
+      name              = "${var.name_prefix}-backup-rule"
       schedule          = "cron(0 12 * * ? *)"
       start_window      = "65"
       completion_window = "180"
@@ -183,7 +191,7 @@ module "backup" {
     }
   ]
 
-  selection_name      = "test-backup-selection"
+  selection_name      = "${var.name_prefix}-backup-selection"
   selection_resources = [module.aurora.rds_cluster_arn]
 
   selection_tags = [

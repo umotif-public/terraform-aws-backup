@@ -8,47 +8,54 @@ data "aws_region" "current" {}
 ######
 # KMS
 ######
-module "kms-backup" {
-  source  = "umotif-public/kms/aws"
-  version = "~> 1.0"
+data "aws_iam_policy_document" "backup" {
+  statement {
+    sid = "EnableAllActionsIAM"
 
-  alias_name              = "backup-kms-test-key"
-  deletion_window_in_days = 7
-  enable_key_rotation     = true
-  policy = jsonencode(
-    {
-      "Version" : "2012-10-17",
-      "Statement" : [
-        {
-          "Sid" : "Enable IAM User Permissions",
-          "Effect" : "Allow",
-          "Principal" : {
-            "AWS" : [
-              "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
-              data.aws_caller_identity.current.arn
-            ]
-          },
-          "Action" : "kms:*",
-          "Resource" : "*"
-        },
-        {
-          "Sid" : "Allow use of the key",
-          "Effect" : "Allow",
-          "Principal" : {
-            "Service" : ["backup.amazonaws.com"]
-          },
-          "Action" : [
-            "kms:Encrypt",
-            "kms:Decrypt",
-            "kms:ReEncrypt*",
-            "kms:GenerateDataKey*",
-            "kms:DescribeKey"
-          ],
-          "Resource" : "*"
-        }
+    actions = ["kms:*"]
+
+    resources = ["*"]
+
+    principals {
+      type = "AWS"
+      identifiers = [
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
+        data.aws_caller_identity.current.arn
       ]
     }
-  )
+  }
+
+  statement {
+    sid = "AllowBasicActionsBackupService"
+
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:DescribeKey"
+    ]
+
+    resources = ["*"]
+
+    principals {
+      type = "Service"
+      identifiers = [
+        "backup.amazonaws.com"
+      ]
+    }
+  }
+}
+
+module "kms_backup" {
+  source  = "umotif-public/kms/aws"
+  version = "~> 1.0.2"
+
+  alias_name              = "${var.name_prefix}-backup"
+  deletion_window_in_days = 7
+  enable_key_rotation     = true
+
+  policy = data.aws_iam_policy_document.backup.json
 
   tags = {
     Environment = "test"
@@ -59,8 +66,8 @@ module "kms-backup" {
 # Backup
 #########
 resource "aws_backup_vault" "external_vault" {
-  name        = "external-test"
-  kms_key_arn = module.kms-backup.key_arn
+  name        = "${var.name_prefix}-external"
+  kms_key_arn = module.kms_backup.key_arn
   tags = {
     Enviroment = "test"
     Vault      = "external"
@@ -71,11 +78,11 @@ module "backup" {
   source = "../.."
 
   # Create a backup plan
-  plan_name = "test-backup-plan"
+  plan_name = "${var.name_prefix}-backup-plan"
 
   rules = [
     {
-      name              = "test-backup-rule"
+      name              = "${var.name_prefix}-backup-rule"
       target_vault_name = aws_backup_vault.external_vault.name
       schedule          = "cron(0 12 * * ? *)"
       start_window      = "65"
@@ -87,12 +94,12 @@ module "backup" {
 
       lifecycle = {
         cold_storage_after = 0
-        delete_after       = 90
+        delete_after       = 95
       }
     }
   ]
 
-  selection_name = "test-backup-selection"
+  selection_name = "${var.name_prefix}-backup-selection"
 
   selection_tags = [
     {
