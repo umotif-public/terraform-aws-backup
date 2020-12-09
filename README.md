@@ -96,7 +96,7 @@ Module managed by:
 | plan\_name | The display name of a backup plan | `string` | n/a | yes |
 | rule\_completion\_window | The amount of time AWS Backup attempts a backup before canceling the job and returning an error | `number` | `null` | no |
 | rule\_copy\_action\_destination\_vault\_arn | An Amazon Resource Name (ARN) that uniquely identifies the destination backup vault for the copied backup. | `string` | `null` | no |
-| rule\_copy\_action\_lifecycle | The lifecycle defines when a protected resource is copied over to a backup vault and when it expires. | `map` | `{}` | no |
+| rule\_copy\_action\_lifecycle | The lifecycle defines when a protected resource is copied over to a backup vault and when it expires. | `map(any)` | `{}` | no |
 | rule\_lifecycle\_cold\_storage\_after | Specifies the number of days after creation that a recovery point is moved to cold storage | `number` | `null` | no |
 | rule\_lifecycle\_delete\_after | Specifies the number of days after creation that a recovery point is deleted. Must be 90 days greater than `cold_storage_after` | `number` | `null` | no |
 | rule\_name | An display name for a backup rule | `string` | `null` | no |
@@ -109,7 +109,7 @@ Module managed by:
 | selection\_tag\_key | The key in a key-value pair | `string` | `null` | no |
 | selection\_tag\_type | An operation, such as StringEquals, that is applied to a key-value pair used to filter resources in a selection | `string` | `null` | no |
 | selection\_tag\_value | The value in a key-value pair | `string` | `null` | no |
-| selection\_tags | A list of selection tags map | `list` | `[]` | no |
+| selection\_tags | A list of selection tags map | `list(any)` | `[]` | no |
 | tags | A mapping of tags to assign to the resource | `map(string)` | `{}` | no |
 | vault\_kms\_key\_arn | The server-side encryption key that is used to protect your backups | `string` | `null` | no |
 | vault\_name | Name of the backup vault to create. If not given, AWS use default | `string` | `null` | no |

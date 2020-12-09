@@ -44,7 +44,7 @@ variable "selection_tag_value" {
 
 variable "selection_tags" {
   description = "A list of selection tags map"
-  type        = list
+  type        = list(any)
   default     = []
 }
 
@@ -123,7 +123,7 @@ variable "rule_lifecycle_delete_after" {
 # Rule copy action
 variable "rule_copy_action_lifecycle" {
   description = "The lifecycle defines when a protected resource is copied over to a backup vault and when it expires."
-  type        = map
+  type        = map(any)
   default     = {}
 }
 
