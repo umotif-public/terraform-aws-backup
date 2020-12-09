@@ -8,58 +8,8 @@ data "aws_region" "current" {}
 ######
 # KMS
 ######
-data "aws_iam_policy_document" "backup" {
-  statement {
-    sid = "EnableAllActionsIAM"
-
-    actions = ["kms:*"]
-
-    resources = ["*"]
-
-    principals {
-      type = "AWS"
-      identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
-        data.aws_caller_identity.current.arn
-      ]
-    }
-  }
-
-  statement {
-    sid = "AllowBasicActionsBackupService"
-
-    actions = [
-      "kms:Encrypt",
-      "kms:Decrypt",
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
-      "kms:DescribeKey"
-    ]
-
-    resources = ["*"]
-
-    principals {
-      type = "Service"
-      identifiers = [
-        "backup.amazonaws.com"
-      ]
-    }
-  }
-}
-
-module "kms_backup" {
-  source  = "umotif-public/kms/aws"
-  version = "~> 1.0.2"
-
-  alias_name              = "${var.name_prefix}-backup"
-  deletion_window_in_days = 7
-  enable_key_rotation     = true
-
-  policy = data.aws_iam_policy_document.backup.json
-
-  tags = {
-    Environment = "test"
-  }
+data "aws_kms_key" "backup" {
+  key_id = "alias/aws/backup"
 }
 
 #########
@@ -67,7 +17,7 @@ module "kms_backup" {
 #########
 resource "aws_backup_vault" "external_vault" {
   name        = "${var.name_prefix}-external"
-  kms_key_arn = module.kms_backup.key_arn
+  kms_key_arn = data.aws_kms_key.backup.arn
   tags = {
     Enviroment = "test"
     Vault      = "external"

@@ -16,7 +16,7 @@ data "aws_subnet_ids" "all" {
   vpc_id = data.aws_vpc.default.id
 }
 
-data "aws_subnet" "example" {
+data "aws_subnet" "public" {
   for_each = data.aws_subnet_ids.all.ids
   id       = each.value
 }
@@ -24,112 +24,12 @@ data "aws_subnet" "example" {
 #############
 # KMS key
 #############
-data "aws_iam_policy_document" "rds" {
-  statement {
-    sid = "EnableAllActionsIAM"
-
-    actions = ["kms:*"]
-
-    resources = ["*"]
-
-    principals {
-      type = "AWS"
-      identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
-        data.aws_caller_identity.current.arn
-      ]
-    }
-  }
-
-  statement {
-    sid = "AllowBasicActionsRDSservices"
-
-    actions = [
-      "kms:Encrypt",
-      "kms:Decrypt",
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
-      "kms:DescribeKey"
-    ]
-
-    resources = ["*"]
-
-    principals {
-      type = "Service"
-      identifiers = [
-        "rds.amazonaws.com",
-        "monitoring.rds.amazonaws.com"
-      ]
-    }
-  }
+data "aws_kms_key" "backup" {
+  key_id = "alias/aws/backup"
 }
 
-module "kms_rds" {
-  source  = "umotif-public/kms/aws"
-  version = "~> 1.0.2"
-
-  alias_name              = "${var.name_prefix}-rds"
-  deletion_window_in_days = 7
-  enable_key_rotation     = true
-  policy                  = data.aws_iam_policy_document.rds.json
-
-  tags = {
-    Environment = "test"
-  }
-}
-
-data "aws_iam_policy_document" "backup" {
-  statement {
-    sid = "EnableAllActionsIAM"
-
-    actions = ["kms:*"]
-
-    resources = ["*"]
-
-    principals {
-      type = "AWS"
-      identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
-        data.aws_caller_identity.current.arn
-      ]
-    }
-  }
-
-  statement {
-    sid = "AllowBasicActionsBackupService"
-
-    actions = [
-      "kms:Encrypt",
-      "kms:Decrypt",
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
-      "kms:DescribeKey"
-    ]
-
-    resources = ["*"]
-
-    principals {
-      type = "Service"
-      identifiers = [
-        "backup.amazonaws.com"
-      ]
-    }
-  }
-}
-
-module "kms_backup" {
-  source  = "umotif-public/kms/aws"
-  version = "~> 1.0.2"
-
-  alias_name              = "${var.name_prefix}-backup"
-  deletion_window_in_days = 7
-  enable_key_rotation     = true
-
-  policy = data.aws_iam_policy_document.backup.json
-
-  tags = {
-    Environment = "test"
-  }
+data "aws_kms_key" "rds" {
+  key_id = "alias/aws/rds"
 }
 
 #############
@@ -145,11 +45,11 @@ module "aurora-mysql" {
   vpc_id  = data.aws_vpc.default.id
   subnets = data.aws_subnet_ids.all.ids
 
-  kms_key_id = module.kms_rds.key_arn
+  kms_key_id = data.aws_kms_key.rds.arn
 
   instance_type = "db.t3.medium"
 
-  allowed_cidr_blocks = [for s in data.aws_subnet.example : s.cidr_block]
+  allowed_cidr_blocks = [for s in data.aws_subnet.public : s.cidr_block]
 
   tags = {
     Environment = "test"
@@ -168,11 +68,11 @@ module "aurora-postgresql" {
   vpc_id  = data.aws_vpc.default.id
   subnets = data.aws_subnet_ids.all.ids
 
-  kms_key_id = module.kms_rds.key_arn
+  kms_key_id = data.aws_kms_key.rds.arn
 
   instance_type = "db.t3.medium"
 
-  allowed_cidr_blocks = [for s in data.aws_subnet.example : s.cidr_block]
+  allowed_cidr_blocks = [for s in data.aws_subnet.public : s.cidr_block]
 
   tags = {
     Environment = "test"
@@ -187,7 +87,7 @@ module "backup" {
 
   # Create a Vault
   vault_name        = "${var.name_prefix}-rds-aurora"
-  vault_kms_key_arn = module.kms_backup.key_arn
+  vault_kms_key_arn = data.aws_kms_key.backup.arn
 
   tags = {
     Environment = "test"
