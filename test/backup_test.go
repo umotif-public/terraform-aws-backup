@@ -3,10 +3,10 @@ package test
 import (
 	"fmt"
 	"strings"
-	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/terraform"
+	"github.com/gruntwork-io/terratest/modules/testing"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -4,7 +4,7 @@ Terraform module to provision [AWS Backup](https://aws.amazon.com/backup/) resou
 
 ## Terraform versions
 
-Terraform 0.13. Pin module version to `~> v1.0`. Submit pull-requests to `master` branch.
+Terraform 0.13. Pin module version to `~> v2.0`. Submit pull-requests to `master` branch.
 
 ## Usage
 
@@ -56,6 +56,19 @@ module "backup" {
     }
   ]
 }
+```
+
+## Terratest
+
+We are using [Terratest](https://terratest.gruntwork.io/) to run tests on this module.
+
+```bash
+# Change to test directory
+cd test
+# Get dependencies
+go mod download
+# Run tests
+go test -v -timeout 30m
 ```
 
 ## Assumptions
@@ -165,4 +178,6 @@ brew install pre-commit terraform-docs tflint
 
 brew tap git-chglog/git-chglog
 brew install git-chglog
+
+brew install go
 ```
