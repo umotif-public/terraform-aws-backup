@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+<a name="unreleased"></a>
+## [Unreleased]
+
+- Documentation updates
+- Use default KMS keys
+- Introduce Terratest
+
+
 <a name="1.1.0"></a>
 ## [1.1.0] - 2020-11-18
 
@@ -22,5 +30,6 @@ All notable changes to this project will be documented in this file.
 - Initial commit
 
 
+[Unreleased]: https://github.com/umotif-public/terraform-aws-backup/compare/1.1.0...HEAD
 [1.1.0]: https://github.com/umotif-public/terraform-aws-backup/compare/1.0.1...1.1.0
 [1.0.1]: https://github.com/umotif-public/terraform-aws-backup/compare/1.0.0...1.0.1
