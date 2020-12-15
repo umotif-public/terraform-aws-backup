@@ -1,3 +1,6 @@
+![Lint and Validate](https://github.com/umotif-public/terraform-aws-backup/workflows/Lint%20and%20Validate/badge.svg)
+![Terratest](https://github.com/umotif-public/terraform-aws-backup/workflows/Terratest/badge.svg)
+
 # Terraform AWS Backup
 
 Terraform module to provision [AWS Backup](https://aws.amazon.com/backup/) resources.
