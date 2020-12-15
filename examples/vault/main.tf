@@ -15,17 +15,12 @@ data "aws_kms_key" "backup" {
 #########
 # Backup
 #########
-resource "aws_backup_vault" "external_vault" {
-  name        = "${var.name_prefix}-external"
-  kms_key_arn = data.aws_kms_key.backup.arn
-  tags = {
-    Enviroment = "test"
-    Vault      = "external"
-  }
-}
-
 module "backup" {
   source = "../.."
+
+  # Create a vault
+  vault_name        = "${var.name_prefix}-vault"
+  vault_kms_key_arn = data.aws_kms_key.backup.arn
 
   # Create a backup plan
   plan_name = "${var.name_prefix}-backup-plan"
@@ -33,7 +28,6 @@ module "backup" {
   rules = [
     {
       name              = "${var.name_prefix}-backup-rule"
-      target_vault_name = aws_backup_vault.external_vault.name
       schedule          = "cron(0 12 * * ? *)"
       start_window      = "65"
       completion_window = "180"
@@ -44,7 +38,7 @@ module "backup" {
 
       lifecycle = {
         cold_storage_after = 0
-        delete_after       = 95
+        delete_after       = 90
       }
     }
   ]
@@ -67,6 +61,4 @@ module "backup" {
   tags = {
     Environment = "test"
   }
-
-  depends_on = [aws_backup_vault.external_vault]
 }

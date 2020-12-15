@@ -1,5 +1,6 @@
-# terraform-aws-backup
-Terraform module to provision AWS Backup resources
+# Terraform AWS Backup
+
+Terraform module to provision [AWS Backup](https://aws.amazon.com/backup/) resources.
 
 ## Terraform versions
 
@@ -10,7 +11,7 @@ Terraform 0.13. Pin module version to `~> v1.0`. Submit pull-requests to `master
 ```hcl
 module "backup" {
   source = "umotif-public/backup/aws"
-  version = "~> 1.0.0"
+  version = "~> 1.0"
 
   vault_name        = "test-rds-aurora"
   vault_kms_key_arn = "arn:aws:kms:eu-west-1:1111111111:key/07a8a813-fcc9-4d7f-a982648d9c25"
@@ -40,7 +41,7 @@ module "backup" {
   ]
 
   selection_name = "test-backup-selection"
-  selection_resources = ["arn:aws:rds:eu-west-1:1111111111:cluster:example-dataabase-1"]
+  selection_resources = ["arn:aws:rds:eu-west-1:1111111111:cluster:example-database-1"]
 
   selection_tags = [
     {
@@ -66,12 +67,14 @@ Module is to be used with Terraform > 0.13.
 * [Backup with Aurora MySQL](https://github.com/umotif-public/terraform-aws-backup/tree/master/examples/one-db)
 * [Backup with Aurora MySQL and Aurora PostgreSQL](https://github.com/umotif-public/terraform-aws-backup/tree/master/examples/multiple-dbs)
 * [Backup with an externally created Vault](https://github.com/umotif-public/terraform-aws-backup/tree/master/examples/external-vault)
+* [Backup with Vault only](https://github.com/umotif-public/terraform-aws-backup/tree/master/examples/vault)
 
 ## Authors
 
 Module managed by:
-* [Marcin Cuber](https://github.com/marcincuber) [LinkedIn](https://www.linkedin.com/in/marcincuber/)
-* [Abdul Wahid](https://github.com/Ohid25) [LinkedIn](https://www.linkedin.com/in/abdul-wahid/)
+
+* [Marcin Cuber](https://github.com/marcincuber) ([LinkedIn](https://www.linkedin.com/in/marcincuber/))
+* [Abdul Wahid](https://github.com/Ohid25) ([LinkedIn](https://www.linkedin.com/in/abdul-wahid/))
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
@@ -96,7 +99,7 @@ Module managed by:
 | plan\_name | The display name of a backup plan | `string` | n/a | yes |
 | rule\_completion\_window | The amount of time AWS Backup attempts a backup before canceling the job and returning an error | `number` | `null` | no |
 | rule\_copy\_action\_destination\_vault\_arn | An Amazon Resource Name (ARN) that uniquely identifies the destination backup vault for the copied backup. | `string` | `null` | no |
-| rule\_copy\_action\_lifecycle | The lifecycle defines when a protected resource is copied over to a backup vault and when it expires. | `map` | `{}` | no |
+| rule\_copy\_action\_lifecycle | The lifecycle defines when a protected resource is copied over to a backup vault and when it expires. | `map(any)` | `{}` | no |
 | rule\_lifecycle\_cold\_storage\_after | Specifies the number of days after creation that a recovery point is moved to cold storage | `number` | `null` | no |
 | rule\_lifecycle\_delete\_after | Specifies the number of days after creation that a recovery point is deleted. Must be 90 days greater than `cold_storage_after` | `number` | `null` | no |
 | rule\_name | An display name for a backup rule | `string` | `null` | no |
@@ -109,7 +112,7 @@ Module managed by:
 | selection\_tag\_key | The key in a key-value pair | `string` | `null` | no |
 | selection\_tag\_type | An operation, such as StringEquals, that is applied to a key-value pair used to filter resources in a selection | `string` | `null` | no |
 | selection\_tag\_value | The value in a key-value pair | `string` | `null` | no |
-| selection\_tags | A list of selection tags map | `list` | `[]` | no |
+| selection\_tags | A list of selection tags map | `list(any)` | `[]` | no |
 | tags | A mapping of tags to assign to the resource | `map(string)` | `{}` | no |
 | vault\_kms\_key\_arn | The server-side encryption key that is used to protect your backups | `string` | `null` | no |
 | vault\_name | Name of the backup vault to create. If not given, AWS use default | `string` | `null` | no |
@@ -132,13 +135,28 @@ Module managed by:
 
 See LICENSE for full details.
 
-## Pre-commit hooks
+## Pre-commit hooks & Golang for Terratest
 
 ### Install dependencies
 
 * [`pre-commit`](https://pre-commit.com/#install)
 * [`terraform-docs`](https://github.com/segmentio/terraform-docs) required for `terraform_docs` hooks.
 * [`TFLint`](https://github.com/terraform-linters/tflint) required for `terraform_tflint` hook.
+* [`golang`](https://formulae.brew.sh/formula/go) required for running tests.
+
+#### Terratest
+
+We are using [Terratest](https://terratest.gruntwork.io/) to run tests on this module.
+
+```bash
+brew install go
+# Change to test directory
+cd test
+# Get dependencies
+go mod download
+# Run tests
+go test -v -timeout 30m
+```
 
 #### MacOS
 
