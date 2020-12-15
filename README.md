@@ -4,14 +4,14 @@ Terraform module to provision [AWS Backup](https://aws.amazon.com/backup/) resou
 
 ## Terraform versions
 
-Terraform 0.13. Pin module version to `~> v2.0`. Submit pull-requests to `master` branch.
+Terraform 0.13. Pin module version to `~> v1.0`. Submit pull-requests to `master` branch.
 
 ## Usage
 
 ```hcl
 module "backup" {
   source = "umotif-public/backup/aws"
-  version = "~> 2.0.0"
+  version = "~> 1.0"
 
   vault_name        = "test-rds-aurora"
   vault_kms_key_arn = "arn:aws:kms:eu-west-1:1111111111:key/07a8a813-fcc9-4d7f-a982648d9c25"
@@ -56,19 +56,6 @@ module "backup" {
     }
   ]
 }
-```
-
-## Terratest
-
-We are using [Terratest](https://terratest.gruntwork.io/) to run tests on this module.
-
-```bash
-# Change to test directory
-cd test
-# Get dependencies
-go mod download
-# Run tests
-go test -v -timeout 30m
 ```
 
 ## Assumptions
@@ -157,6 +144,20 @@ See LICENSE for full details.
 * [`TFLint`](https://github.com/terraform-linters/tflint) required for `terraform_tflint` hook.
 * [`golang`](https://formulae.brew.sh/formula/go) required for running tests.
 
+#### Terratest
+
+We are using [Terratest](https://terratest.gruntwork.io/) to run tests on this module.
+
+```bash
+brew install go
+# Change to test directory
+cd test
+# Get dependencies
+go mod download
+# Run tests
+go test -v -timeout 30m
+```
+
 #### MacOS
 
 ```bash
@@ -164,6 +165,4 @@ brew install pre-commit terraform-docs tflint
 
 brew tap git-chglog/git-chglog
 brew install git-chglog
-
-brew install go
 ```
