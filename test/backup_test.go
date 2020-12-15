@@ -39,5 +39,5 @@ func TestBackupModule(t *testing.T) {
 
 	// Verify we're getting back the outputs we expect
 	assert.Contains(t, backupPlanArn, "arn:aws:backup:eu-west-1:")
-	assert.Contains(t, backupVaultID, "vault")
+	assert.Equal(t, backupVaultID, "test"+uniqueID+"-vault")
 }
