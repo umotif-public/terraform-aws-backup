@@ -18,7 +18,7 @@ func TestBackupModule(t *testing.T) {
 
   terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
     // Path to where our Terraform code is
-    TerraformDir: "../examples/one-db",
+    TerraformDir: "../examples/vault",
     Upgrade:      true,
 
     // Variables to pass using -var-file option
@@ -39,5 +39,5 @@ func TestBackupModule(t *testing.T) {
 
   // Verify we're getting back the outputs we expect
   assert.Contains(t, backupPlanArn, "arn:aws:backup:eu-west-1:")
-  assert.Contains(t, backupVaultID, "rds-aurora")
+  assert.Contains(t, backupVaultID, "vault")
 }
