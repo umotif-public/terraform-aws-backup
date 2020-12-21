@@ -11,7 +11,7 @@ on:
 jobs:
   terratest:
     name: Infrastructure Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       working-directory: ./test
 
