@@ -1,3 +1,4 @@
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/umotif-public/terraform-aws-backup?style=social)
 ![Lint and Validate](https://github.com/umotif-public/terraform-aws-backup/workflows/Lint%20and%20Validate/badge.svg)
 ![Terratest](https://github.com/umotif-public/terraform-aws-backup/workflows/Terratest/badge.svg)
 
