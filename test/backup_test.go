@@ -10,7 +10,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// Test the example in examples/one-db using Terratest.
 func TestBackupModule(t *testing.T) {
 	// Random generate a string for naming resources
 	uniqueID := strings.ToLower(random.UniqueId())
