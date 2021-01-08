@@ -1,6 +1,7 @@
-![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/umotif-public/terraform-aws-backup?style=social)
-![Lint and Validate](https://github.com/umotif-public/terraform-aws-backup/workflows/Lint%20and%20Validate/badge.svg)
-![Terratest](https://github.com/umotif-public/terraform-aws-backup/workflows/Terratest/badge.svg)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/umotif-public/terraform-aws-backup)](https://github.com/umotif-public/terraform-aws-backup/releases/latest)
+[![Lint and Validate](https://github.com/umotif-public/terraform-aws-backup/workflows/Lint%20and%20Validate/badge.svg)](https://github.com/umotif-public/terraform-aws-backup/actions?query=workflow%3A%22Lint+and+Validate%22)
+[![Terratest](https://github.com/umotif-public/terraform-aws-backup/workflows/Terratest/badge.svg)](https://github.com/umotif-public/terraform-aws-backup/actions?query=workflow%3ATerratest)
+
 
 # Terraform AWS Backup
 
