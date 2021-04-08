@@ -95,6 +95,21 @@ Module managed by:
 |------|---------|
 | aws | >= 3.11 |
 
+## Modules
+
+No Modules.
+
+## Resources
+
+| Name |
+|------|
+| [aws_backup_plan](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/backup_plan) |
+| [aws_backup_selection](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/backup_selection) |
+| [aws_backup_vault](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/backup_vault) |
+| [aws_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) |
+| [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) |
+| [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -102,21 +117,9 @@ Module managed by:
 | advanced\_backup\_settings | An object that specifies backup options for each resource type | `any` | `[]` | no |
 | iam\_role\_name | Name of IAM Role to associate to the Backup Plan | `string` | `null` | no |
 | plan\_name | The display name of a backup plan | `string` | n/a | yes |
-| rule\_completion\_window | The amount of time AWS Backup attempts a backup before canceling the job and returning an error | `number` | `null` | no |
-| rule\_copy\_action\_destination\_vault\_arn | An Amazon Resource Name (ARN) that uniquely identifies the destination backup vault for the copied backup. | `string` | `null` | no |
-| rule\_copy\_action\_lifecycle | The lifecycle defines when a protected resource is copied over to a backup vault and when it expires. | `map(any)` | `{}` | no |
-| rule\_lifecycle\_cold\_storage\_after | Specifies the number of days after creation that a recovery point is moved to cold storage | `number` | `null` | no |
-| rule\_lifecycle\_delete\_after | Specifies the number of days after creation that a recovery point is deleted. Must be 90 days greater than `cold_storage_after` | `number` | `null` | no |
-| rule\_name | An display name for a backup rule | `string` | `null` | no |
-| rule\_recovery\_point\_tags | Metadata that you can assign to help organize the resources that you create | `map(string)` | `{}` | no |
-| rule\_schedule | A CRON expression specifying when AWS Backup initiates a backup job | `string` | `null` | no |
-| rule\_start\_window | The amount of time in minutes before beginning a backup | `number` | `null` | no |
 | rules | A list of rules mapping rule configurations for a backup plan | `any` | `[]` | no |
 | selection\_name | The display name of a resource selection document | `string` | `null` | no |
 | selection\_resources | A list of strings that either contain Amazon Resource Names (ARNs) or match patterns of resources to assign to a backup plan | `list(string)` | `[]` | no |
-| selection\_tag\_key | The key in a key-value pair | `string` | `null` | no |
-| selection\_tag\_type | An operation, such as StringEquals, that is applied to a key-value pair used to filter resources in a selection | `string` | `null` | no |
-| selection\_tag\_value | The value in a key-value pair | `string` | `null` | no |
 | selection\_tags | A list of selection tags map | `list(any)` | `[]` | no |
 | tags | A mapping of tags to assign to the resource | `map(string)` | `{}` | no |
 | vault\_kms\_key\_arn | The server-side encryption key that is used to protect your backups | `string` | `null` | no |
@@ -133,7 +136,6 @@ Module managed by:
 | backup\_vault\_arn | The Amazon Resource Name (ARN) that identifies the AWS Backup Vault |
 | backup\_vault\_id | The name of the AWS Backup Vault |
 | backup\_vault\_recovery\_points | The number of recovery points that are stored in a backup vault |
-
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## License
