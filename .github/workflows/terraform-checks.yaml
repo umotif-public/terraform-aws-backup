@@ -19,7 +19,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 0.14.10
+          terraform_version: 0.14.2
           terraform_wrapper: false
 
       - name: Terraform fmt
@@ -35,7 +35,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 0.14.10
+          terraform_version: 0.14.2
           terraform_wrapper: false
 
       - name: Terraform init
