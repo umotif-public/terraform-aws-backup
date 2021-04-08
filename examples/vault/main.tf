@@ -37,8 +37,7 @@ module "backup" {
       }
 
       lifecycle = {
-        cold_storage_after = 0
-        delete_after       = 90
+        delete_after = 90
       }
     }
   ]

@@ -18,12 +18,13 @@ resource "aws_backup_plan" "main" {
   dynamic "rule" {
     for_each = var.rules
     content {
-      rule_name           = lookup(rule.value, "name")
-      target_vault_name   = var.vault_name != null ? aws_backup_vault.main[0].name : lookup(rule.value, "target_vault_name", "Default")
-      schedule            = lookup(rule.value, "schedule", null)
-      start_window        = lookup(rule.value, "start_window", null)
-      completion_window   = lookup(rule.value, "completion_window", null)
-      recovery_point_tags = length(lookup(rule.value, "recovery_point_tags")) == 0 ? var.tags : lookup(rule.value, "recovery_point_tags")
+      rule_name                = lookup(rule.value, "name")
+      target_vault_name        = var.vault_name != null ? aws_backup_vault.main[0].name : lookup(rule.value, "target_vault_name", "Default")
+      schedule                 = lookup(rule.value, "schedule", null)
+      start_window             = lookup(rule.value, "start_window", null)
+      completion_window        = lookup(rule.value, "completion_window", null)
+      enable_continuous_backup = lookup(rule.value, "enable_continuous_backup", false)
+      recovery_point_tags      = length(lookup(rule.value, "recovery_point_tags")) == 0 ? var.tags : lookup(rule.value, "recovery_point_tags")
 
       dynamic "lifecycle" {
         for_each = length(lookup(rule.value, "lifecycle")) == 0 ? [] : [lookup(rule.value, "lifecycle", {})]
