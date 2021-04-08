@@ -75,18 +75,15 @@ module "backup" {
 
   rules = [
     {
-      name              = "${var.name_prefix}-backup-rule"
-      schedule          = "cron(0 12 * * ? *)"
-      start_window      = "65"
-      completion_window = "180"
+      name                     = "${var.name_prefix}-backup-rule"
+      enable_continuous_backup = true
       recovery_point_tags = {
         Project = "test"
         Region  = "eu-west-1"
       }
 
       lifecycle = {
-        cold_storage_after = 0
-        delete_after       = 90
+        delete_after = 30
       }
     }
   ]
