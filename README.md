@@ -106,24 +106,32 @@ No Modules.
 | [aws_backup_plan](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/backup_plan) |
 | [aws_backup_selection](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/backup_selection) |
 | [aws_backup_vault](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/backup_vault) |
+| [aws_backup_vault_notifications](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/backup_vault_notifications) |
 | [aws_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) |
+| [aws_iam_policy_document](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) |
 | [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) |
 | [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) |
+| [aws_sns_topic](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic) |
+| [aws_sns_topic_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic_policy) |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | advanced\_backup\_settings | An object that specifies backup options for each resource type | `any` | `[]` | no |
+| backup\_vault\_events | An array of events that indicate the status of jobs to back up resources to the backup vault. | `list(string)` | <pre>[<br>  "BACKUP_JOB_STARTED",<br>  "BACKUP_JOB_COMPLETED",<br>  "BACKUP_JOB_SUCCESSFUL",<br>  "BACKUP_JOB_FAILED",<br>  "BACKUP_JOB_EXPIRED",<br>  "RESTORE_JOB_STARTED",<br>  "RESTORE_JOB_COMPLETED",<br>  "RESTORE_JOB_SUCCESSFUL",<br>  "RESTORE_JOB_FAILED",<br>  "COPY_JOB_STARTED",<br>  "COPY_JOB_SUCCESSFUL",<br>  "COPY_JOB_FAILED",<br>  "RECOVERY_POINT_MODIFIED",<br>  "BACKUP_PLAN_CREATED",<br>  "BACKUP_PLAN_MODIFIED"<br>]</pre> | no |
+| enable\_sns\_notifications | Enable Backup Vault Notifications | `bool` | `false` | no |
 | iam\_role\_name | Name of IAM Role to associate to the Backup Plan | `string` | `null` | no |
 | plan\_name | The display name of a backup plan | `string` | n/a | yes |
 | rules | A list of rules mapping rule configurations for a backup plan | `any` | `[]` | no |
 | selection\_name | The display name of a resource selection document | `string` | `null` | no |
 | selection\_resources | A list of strings that either contain Amazon Resource Names (ARNs) or match patterns of resources to assign to a backup plan | `list(string)` | `[]` | no |
 | selection\_tags | A list of selection tags map | `list(any)` | `[]` | no |
+| sns\_topic\_arn | The Amazon Resource Name (ARN) that specifies the topic for a backup vault’s events | `string` | `null` | no |
 | tags | A mapping of tags to assign to the resource | `map(string)` | `{}` | no |
 | vault\_kms\_key\_arn | The server-side encryption key that is used to protect your backups | `string` | `null` | no |
 | vault\_name | Name of the backup vault to create. If not given, AWS use default | `string` | `null` | no |
+| vault\_sns\_kms\_key\_arn | The server-side encryption key that is used to protect SNS messages for backups | `string` | `null` | no |
 
 ## Outputs
 
@@ -133,7 +141,9 @@ No Modules.
 | backup\_plan\_id | The name of the backup plan |
 | backup\_plan\_version | Unique, randomly generated, Unicode, UTF-8 encoded string that serves as the version ID of the backup plan. |
 | backup\_selection\_id | The identifier of the backup selection |
+| backup\_sns\_topic\_arn | The Amazon Resource Name (ARN) that specifies the topic for a backup vault’s events |
 | backup\_vault\_arn | The Amazon Resource Name (ARN) that identifies the AWS Backup Vault |
+| backup\_vault\_events | An array of events that indicate the status of jobs to back up resources to the backup vault. |
 | backup\_vault\_id | The name of the AWS Backup Vault |
 | backup\_vault\_recovery\_points | The number of recovery points that are stored in a backup vault |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

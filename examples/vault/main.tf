@@ -12,6 +12,10 @@ data "aws_kms_key" "backup" {
   key_id = "alias/aws/backup"
 }
 
+data "aws_kms_key" "sns_backup" {
+  key_id = "alias/aws/sns"
+}
+
 #########
 # Backup
 #########
@@ -55,6 +59,14 @@ module "backup" {
       key   = "Environment"
       value = "test"
     }
+  ]
+
+  # Enable SNS Backup Notifications
+  enable_sns_notifications = true
+  vault_sns_kms_key_arn    = data.aws_kms_key.sns_backup.arn
+  backup_vault_events = [
+    "BACKUP_JOB_FAILED",
+    "BACKUP_JOB_EXPIRED",
   ]
 
   tags = {

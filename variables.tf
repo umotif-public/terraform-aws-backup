@@ -64,3 +64,46 @@ variable "iam_role_name" {
   type        = string
   default     = null
 }
+
+################
+# AWS Backup SNS Notifications
+################
+variable "enable_sns_notifications" {
+  description = "Enable Backup Vault Notifications"
+  type        = bool
+  default     = false
+}
+
+variable "sns_topic_arn" {
+  description = "The Amazon Resource Name (ARN) that specifies the topic for a backup vault’s events"
+  type        = string
+  default     = null
+}
+
+variable "vault_sns_kms_key_arn" {
+  description = "The server-side encryption key that is used to protect SNS messages for backups"
+  type        = string
+  default     = null
+}
+
+variable "backup_vault_events" {
+  description = "An array of events that indicate the status of jobs to back up resources to the backup vault."
+  type        = list(string)
+  default = [
+    "BACKUP_JOB_STARTED",
+    "BACKUP_JOB_COMPLETED",
+    "BACKUP_JOB_SUCCESSFUL",
+    "BACKUP_JOB_FAILED",
+    "BACKUP_JOB_EXPIRED",
+    "RESTORE_JOB_STARTED",
+    "RESTORE_JOB_COMPLETED",
+    "RESTORE_JOB_SUCCESSFUL",
+    "RESTORE_JOB_FAILED",
+    "COPY_JOB_STARTED",
+    "COPY_JOB_SUCCESSFUL",
+    "COPY_JOB_FAILED",
+    "RECOVERY_POINT_MODIFIED",
+    "BACKUP_PLAN_CREATED",
+    "BACKUP_PLAN_MODIFIED"
+  ]
+}

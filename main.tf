@@ -82,6 +82,52 @@ resource "aws_backup_selection" "main" {
   }
 }
 
+#######
+# SNS Backup Notifications
+#######
+resource "aws_sns_topic" "main" {
+  count = var.sns_topic_arn != null ? 0 : 1
+
+  name              = var.vault_name != null ? "${aws_backup_vault.main[0].name}-events" : "backup-vault-events"
+  kms_master_key_id = var.vault_sns_kms_key_arn
+}
+
+data "aws_iam_policy_document" "main" {
+  count = var.enable_sns_notifications ? 1 : 0
+
+  statement {
+    sid = "AllowSNSPublish"
+
+    actions = [
+      "SNS:Publish",
+    ]
+
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["backup.amazonaws.com"]
+    }
+
+    resources = var.sns_topic_arn != null ? [var.sns_topic_arn] : [aws_sns_topic.main[0].arn]
+  }
+}
+
+resource "aws_sns_topic_policy" "main" {
+  count = var.enable_sns_notifications ? 1 : 0
+
+  arn    = var.sns_topic_arn != null ? var.sns_topic_arn : aws_sns_topic.main[0].arn
+  policy = data.aws_iam_policy_document.main[0].json
+}
+
+resource "aws_backup_vault_notifications" "main" {
+  count = var.enable_sns_notifications ? 1 : 0
+
+  backup_vault_name   = var.vault_name != null ? aws_backup_vault.main[0].name : "Default"
+  sns_topic_arn       = var.sns_topic_arn != null ? var.sns_topic_arn : aws_sns_topic.main[0].arn
+  backup_vault_events = var.backup_vault_events
+}
+
 #####
 # IAM Role
 #####
