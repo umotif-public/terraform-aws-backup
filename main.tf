@@ -92,7 +92,7 @@ resource "aws_sns_topic" "main" {
   kms_master_key_id = var.vault_sns_kms_key_arn
 }
 
-data "aws_iam_policy_document" "main" {
+data "aws_iam_policy_document" "sns_policy" {
   count = var.enable_sns_notifications ? 1 : 0
 
   statement {
@@ -117,7 +117,7 @@ resource "aws_sns_topic_policy" "main" {
   count = var.enable_sns_notifications ? 1 : 0
 
   arn    = var.sns_topic_arn != null ? var.sns_topic_arn : aws_sns_topic.main[0].arn
-  policy = data.aws_iam_policy_document.main[0].json
+  policy = data.aws_iam_policy_document.sns_policy[0].json
 }
 
 resource "aws_backup_vault_notifications" "main" {
@@ -133,22 +133,26 @@ resource "aws_backup_vault_notifications" "main" {
 #####
 resource "aws_iam_role" "main" {
   name               = var.iam_role_name != null ? var.iam_role_name : "aws-backup-plan-${var.plan_name}-role"
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": ["sts:AssumeRole"],
-      "Effect": "allow",
-      "Principal": {
-        "Service": ["backup.amazonaws.com"]
-      }
-    }
-  ]
-}
-POLICY
+  assume_role_policy = data.aws_iam_policy_document.main.json
 
   tags = var.tags
+}
+
+data "aws_iam_policy_document" "main" {
+  statement {
+    sid = "AllowBackupService"
+
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["backup.amazonaws.com"]
+    }
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "main_role_policy_attach" {
@@ -159,24 +163,22 @@ resource "aws_iam_role_policy_attachment" "main_role_policy_attach" {
 resource "aws_iam_policy" "main_custom_policy" {
   description = "AWS Backup Tag policy"
 
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "AllowTaggingResources",
-      "Effect": "Allow",
-      "Action": [
-        "backup:TagResource",
-        "backup:ListTags",
-        "backup:UntagResource",
-        "tag:GetResources"
-      ],
-      "Resource": "*"
-    }
-  ]
+  policy = data.aws_iam_policy_document.main_custom_policy.json
 }
-EOF
+
+data "aws_iam_policy_document" "main_custom_policy" {
+  statement {
+    sid = "AllowTaggingResources"
+
+    actions = [
+      "backup:TagResource",
+      "backup:ListTags",
+      "backup:UntagResource",
+      "tag:GetResources"
+    ]
+
+    resources = ["*"]
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "main_custom_policy_attach" {
