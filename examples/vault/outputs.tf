@@ -32,13 +32,3 @@ output "backup_selection_id" {
   description = "The identifier of the backup selection"
   value       = module.backup.backup_selection_id
 }
-
-output "backup_sns_topic_arn" {
-  description = "The Amazon Resource Name (ARN) that specifies the topic for a backup vault's events"
-  value       = module.backup.backup_sns_topic_arn
-}
-
-output "backup_vault_events" {
-  description = "An array of events that indicate the status of the jobs to back up resources to the backup vault."
-  value       = module.backup.backup_vault_events
-}

@@ -47,11 +47,10 @@ output "backup_selection_id" {
 ####
 output "backup_sns_topic_arn" {
   description = "The Amazon Resource Name (ARN) that specifies the topic for a backup vault’s events"
-  # value       = aws_sns_topic.main[0].arn
-  value = var.sns_topic_arn != null ? null : concat(aws_sns_topic.main[*].arn, [""])[0]
+  value       = var.sns_topic_arn != null ? null : concat(aws_sns_topic.main[*].arn, [""])[0]
 }
 
 output "backup_vault_events" {
   description = "An array of events that indicate the status of jobs to back up resources to the backup vault."
-  value       = var.enable_sns_notifications ? aws_backup_vault_notifications.main[0].backup_vault_events : null
+  value       = var.enable_sns_notifications ? concat(aws_backup_vault_notifications.main[*].backup_vault_events, [""])[0] : null
 }

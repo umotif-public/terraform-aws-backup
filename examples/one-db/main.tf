@@ -32,6 +32,10 @@ data "aws_kms_key" "rds" {
   key_id = "alias/aws/rds"
 }
 
+data "aws_kms_key" "sns_backup" {
+  key_id = "alias/aws/sns"
+}
+
 #############
 # RDS Aurora
 #############
@@ -91,16 +95,11 @@ module "backup" {
   selection_name      = "${var.name_prefix}-backup-selection"
   selection_resources = [module.aurora.rds_cluster_arn]
 
-  selection_tags = [
-    {
-      type  = "STRINGEQUALS"
-      key   = "Project"
-      value = "Test"
-    },
-    {
-      type  = "STRINGEQUALS"
-      key   = "Environment"
-      value = "test"
-    }
+  # Enable SNS Backup Notifications
+  enable_sns_notifications = true
+  vault_sns_kms_key_arn    = data.aws_kms_key.sns_backup.arn
+  backup_vault_events = [
+    "BACKUP_JOB_FAILED",
+    "BACKUP_JOB_EXPIRED",
   ]
 }
