@@ -52,5 +52,7 @@ output "backup_sns_topic_arn" {
 
 output "backup_vault_events" {
   description = "An array of events that indicate the status of jobs to back up resources to the backup vault."
-  value       = var.enable_sns_notifications ? concat(aws_backup_vault_notifications.main[*].backup_vault_events, [""])[0] : null
+  value = flatten([
+    for events in aws_backup_vault_notifications.main[*] : events.backup_vault_events
+  if var.enable_sns_notifications])
 }

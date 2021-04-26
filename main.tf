@@ -105,8 +105,10 @@ data "aws_iam_policy_document" "sns_policy" {
     effect = "Allow"
 
     principals {
-      type        = "Service"
-      identifiers = ["backup.amazonaws.com"]
+      type = "Service"
+      identifiers = [
+        "backup.amazonaws.com"
+      ]
     }
 
     resources = var.sns_topic_arn != null ? [var.sns_topic_arn] : [aws_sns_topic.main[0].arn]
@@ -149,14 +151,16 @@ data "aws_iam_policy_document" "main" {
     effect = "Allow"
 
     principals {
-      type        = "Service"
-      identifiers = ["backup.amazonaws.com"]
+      type = "Service"
+      identifiers = [
+        "backup.amazonaws.com"
+      ]
     }
   }
 }
 
 resource "aws_iam_role_policy_attachment" "main_role_policy_attach" {
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup"
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup"
   role       = aws_iam_role.main.name
 }
 

@@ -2,9 +2,6 @@ provider "aws" {
   region = "eu-west-1"
 }
 
-data "aws_caller_identity" "current" {}
-data "aws_region" "current" {}
-
 #####
 # VPC and subnets
 #####
@@ -30,10 +27,6 @@ data "aws_kms_key" "backup" {
 
 data "aws_kms_key" "rds" {
   key_id = "alias/aws/rds"
-}
-
-data "aws_kms_key" "sns_backup" {
-  key_id = "alias/aws/sns"
 }
 
 #############
@@ -97,9 +90,4 @@ module "backup" {
 
   # Enable SNS Backup Notifications
   enable_sns_notifications = true
-  vault_sns_kms_key_arn    = data.aws_kms_key.sns_backup.arn
-  backup_vault_events = [
-    "BACKUP_JOB_FAILED",
-    "BACKUP_JOB_EXPIRED",
-  ]
 }
