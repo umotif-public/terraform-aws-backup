@@ -2,9 +2,6 @@ provider "aws" {
   region = "eu-west-1"
 }
 
-data "aws_caller_identity" "current" {}
-data "aws_region" "current" {}
-
 #####
 # VPC and subnets
 #####
@@ -91,16 +88,6 @@ module "backup" {
   selection_name      = "${var.name_prefix}-backup-selection"
   selection_resources = [module.aurora.rds_cluster_arn]
 
-  selection_tags = [
-    {
-      type  = "STRINGEQUALS"
-      key   = "Project"
-      value = "Test"
-    },
-    {
-      type  = "STRINGEQUALS"
-      key   = "Environment"
-      value = "test"
-    }
-  ]
+  # Enable SNS Backup Notifications
+  enable_sns_notifications = true
 }

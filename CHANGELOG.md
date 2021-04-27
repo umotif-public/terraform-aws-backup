@@ -5,9 +5,16 @@ All notable changes to this project will be documented in this file.
 <a name="unreleased"></a>
 ## [Unreleased]
 
-- Documentation updates
-- Use default KMS keys
-- Introduce Terratest
+- Add SNS Notifications to Backup Vault
+- Add continuous backup feature ([#8](https://github.com/umotif-public/terraform-aws-backup/issues/8))
+- Update README.md
+- Add github actions workflow for Terratest ([#6](https://github.com/umotif-public/terraform-aws-backup/issues/6))
+
+
+<a name="1.2.0"></a>
+## [1.2.0] - 2020-12-15
+
+- Module testing ([#5](https://github.com/umotif-public/terraform-aws-backup/issues/5))
 
 
 <a name="1.1.0"></a>
@@ -30,6 +37,7 @@ All notable changes to this project will be documented in this file.
 - Initial commit
 
 
-[Unreleased]: https://github.com/umotif-public/terraform-aws-backup/compare/1.1.0...HEAD
+[Unreleased]: https://github.com/umotif-public/terraform-aws-backup/compare/1.2.0...HEAD
+[1.2.0]: https://github.com/umotif-public/terraform-aws-backup/compare/1.1.0...1.2.0
 [1.1.0]: https://github.com/umotif-public/terraform-aws-backup/compare/1.0.1...1.1.0
 [1.0.1]: https://github.com/umotif-public/terraform-aws-backup/compare/1.0.0...1.0.1

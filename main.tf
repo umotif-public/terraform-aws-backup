@@ -82,55 +82,50 @@ resource "aws_backup_selection" "main" {
   }
 }
 
+#######
+# SNS Backup Notifications
+#######
+resource "aws_sns_topic" "main" {
+  count = var.create_sns_topic ? 1 : 0
+
+  name              = var.vault_name != null ? "${aws_backup_vault.main[0].name}-events" : "backup-vault-events"
+  kms_master_key_id = var.vault_sns_kms_key_arn
+}
+
+resource "aws_sns_topic_policy" "main" {
+  count = var.enable_sns_notifications ? 1 : 0
+
+  arn    = var.create_sns_topic ? aws_sns_topic.main[0].arn : var.sns_topic_arn
+  policy = data.aws_iam_policy_document.sns_policy[0].json
+}
+
+resource "aws_backup_vault_notifications" "main" {
+  count = var.enable_sns_notifications ? 1 : 0
+
+  backup_vault_name   = var.vault_name != null ? aws_backup_vault.main[0].name : "Default"
+  sns_topic_arn       = var.create_sns_topic ? aws_sns_topic.main[0].arn : var.sns_topic_arn
+  backup_vault_events = var.backup_vault_events
+}
+
 #####
 # IAM Role
 #####
 resource "aws_iam_role" "main" {
   name               = var.iam_role_name != null ? var.iam_role_name : "aws-backup-plan-${var.plan_name}-role"
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": ["sts:AssumeRole"],
-      "Effect": "allow",
-      "Principal": {
-        "Service": ["backup.amazonaws.com"]
-      }
-    }
-  ]
-}
-POLICY
+  assume_role_policy = data.aws_iam_policy_document.main.json
 
   tags = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "main_role_policy_attach" {
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup"
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup"
   role       = aws_iam_role.main.name
 }
 
 resource "aws_iam_policy" "main_custom_policy" {
   description = "AWS Backup Tag policy"
 
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "AllowTaggingResources",
-      "Effect": "Allow",
-      "Action": [
-        "backup:TagResource",
-        "backup:ListTags",
-        "backup:UntagResource",
-        "tag:GetResources"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-EOF
+  policy = data.aws_iam_policy_document.main_custom_policy.json
 }
 
 resource "aws_iam_role_policy_attachment" "main_custom_policy_attach" {

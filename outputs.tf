@@ -19,7 +19,6 @@ output "backup_vault_recovery_points" {
 #####
 # AWS Backup Plan Outputs
 #####
-
 output "backup_plan_id" {
   description = "The name of the backup plan"
   value       = aws_backup_plan.main.id
@@ -38,8 +37,22 @@ output "backup_plan_version" {
 #####
 # AWS Backup Selection Outputs
 ####
-
 output "backup_selection_id" {
   description = "The identifier of the backup selection"
   value       = concat(aws_backup_selection.main[*].id, [""])[0]
+}
+
+#####
+# AWS Backup SNS Notification Outputs
+####
+output "backup_sns_topic_arn" {
+  description = "The Amazon Resource Name (ARN) that specifies the topic for a backup vault’s events"
+  value       = var.create_sns_topic ? concat(aws_sns_topic.main[*].arn, [""])[0] : var.sns_topic_arn
+}
+
+output "backup_vault_events" {
+  description = "An array of events that indicate the status of jobs to back up resources to the backup vault."
+  value = flatten([
+    for events in aws_backup_vault_notifications.main[*] : events.backup_vault_events
+  if var.enable_sns_notifications])
 }

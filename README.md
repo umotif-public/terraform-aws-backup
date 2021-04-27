@@ -2,7 +2,6 @@
 [![Lint and Validate](https://github.com/umotif-public/terraform-aws-backup/workflows/Lint%20and%20Validate/badge.svg)](https://github.com/umotif-public/terraform-aws-backup/actions?query=workflow%3A%22Lint+and+Validate%22)
 [![Terratest](https://github.com/umotif-public/terraform-aws-backup/workflows/Terratest/badge.svg)](https://github.com/umotif-public/terraform-aws-backup/actions?query=workflow%3ATerratest)
 
-
 # Terraform AWS Backup
 
 Terraform module to provision [AWS Backup](https://aws.amazon.com/backup/) resources.
@@ -86,56 +85,84 @@ Module managed by:
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.13 |
-| aws | >= 3.11 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.11 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | >= 3.11 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.11 |
 
 ## Modules
 
-No Modules.
+No modules.
 
 ## Resources
 
-| Name |
-|------|
-| [aws_backup_plan](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/backup_plan) |
-| [aws_backup_selection](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/backup_selection) |
-| [aws_backup_vault](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/backup_vault) |
-| [aws_iam_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) |
-| [aws_iam_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) |
-| [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) |
+| Name | Type |
+|------|------|
+| [aws_backup_plan.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/backup_plan) | resource |
+| [aws_backup_selection.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/backup_selection) | resource |
+| [aws_backup_vault.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/backup_vault) | resource |
+| [aws_backup_vault_notifications.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/backup_vault_notifications) | resource |
+| [aws_iam_policy.main_custom_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_role.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role_policy_attachment.main_custom_policy_attach](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.main_role_policy_attach](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_sns_topic.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic) | resource |
+| [aws_sns_topic_policy.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic_policy) | resource |
+| [aws_iam_policy_document.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.main_custom_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.sns_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_partition.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/partition) | data source |
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| advanced\_backup\_settings | An object that specifies backup options for each resource type | `any` | `[]` | no |
-| iam\_role\_name | Name of IAM Role to associate to the Backup Plan | `string` | `null` | no |
-| plan\_name | The display name of a backup plan | `string` | n/a | yes |
-| rules | A list of rules mapping rule configurations for a backup plan | `any` | `[]` | no |
-| selection\_name | The display name of a resource selection document | `string` | `null` | no |
-| selection\_resources | A list of strings that either contain Amazon Resource Names (ARNs) or match patterns of resources to assign to a backup plan | `list(string)` | `[]` | no |
-| selection\_tags | A list of selection tags map | `list(any)` | `[]` | no |
-| tags | A mapping of tags to assign to the resource | `map(string)` | `{}` | no |
-| vault\_kms\_key\_arn | The server-side encryption key that is used to protect your backups | `string` | `null` | no |
-| vault\_name | Name of the backup vault to create. If not given, AWS use default | `string` | `null` | no |
+| <a name="input_advanced_backup_settings"></a> [advanced\_backup\_settings](#input\_advanced\_backup\_settings) | An object that specifies backup options for each resource type | `any` | `[]` | no |
+| <a name="input_backup_vault_events"></a> [backup\_vault\_events](#input\_backup\_vault\_events) | An array of events that indicate the status of jobs to back up resources to the backup vault. | `list(string)` | <pre>[<br>  "BACKUP_JOB_STARTED",<br>  "BACKUP_JOB_COMPLETED",<br>  "BACKUP_JOB_SUCCESSFUL",<br>  "BACKUP_JOB_FAILED",<br>  "BACKUP_JOB_EXPIRED",<br>  "RESTORE_JOB_STARTED",<br>  "RESTORE_JOB_COMPLETED",<br>  "RESTORE_JOB_SUCCESSFUL",<br>  "RESTORE_JOB_FAILED",<br>  "COPY_JOB_STARTED",<br>  "COPY_JOB_SUCCESSFUL",<br>  "COPY_JOB_FAILED",<br>  "RECOVERY_POINT_MODIFIED",<br>  "BACKUP_PLAN_CREATED",<br>  "BACKUP_PLAN_MODIFIED"<br>]</pre> | no |
+| <a name="input_create_sns_topic"></a> [create\_sns\_topic](#input\_create\_sns\_topic) | Create SNS Topic | `bool` | `true` | no |
+| <a name="input_enable_sns_notifications"></a> [enable\_sns\_notifications](#input\_enable\_sns\_notifications) | Enable Backup Vault Notifications | `bool` | `false` | no |
+| <a name="input_iam_role_name"></a> [iam\_role\_name](#input\_iam\_role\_name) | Name of IAM Role to associate to the Backup Plan | `string` | `null` | no |
+| <a name="input_plan_name"></a> [plan\_name](#input\_plan\_name) | The display name of a backup plan | `string` | n/a | yes |
+| <a name="input_rule_completion_window"></a> [rule\_completion\_window](#input\_rule\_completion\_window) | The amount of time AWS Backup attempts a backup before canceling the job and returning an error | `number` | `null` | no |
+| <a name="input_rule_copy_action_destination_vault_arn"></a> [rule\_copy\_action\_destination\_vault\_arn](#input\_rule\_copy\_action\_destination\_vault\_arn) | An Amazon Resource Name (ARN) that uniquely identifies the destination backup vault for the copied backup. | `string` | `null` | no |
+| <a name="input_rule_copy_action_lifecycle"></a> [rule\_copy\_action\_lifecycle](#input\_rule\_copy\_action\_lifecycle) | The lifecycle defines when a protected resource is copied over to a backup vault and when it expires. | `map(any)` | `{}` | no |
+| <a name="input_rule_lifecycle_cold_storage_after"></a> [rule\_lifecycle\_cold\_storage\_after](#input\_rule\_lifecycle\_cold\_storage\_after) | Specifies the number of days after creation that a recovery point is moved to cold storage | `number` | `null` | no |
+| <a name="input_rule_lifecycle_delete_after"></a> [rule\_lifecycle\_delete\_after](#input\_rule\_lifecycle\_delete\_after) | Specifies the number of days after creation that a recovery point is deleted. Must be 90 days greater than `cold_storage_after` | `number` | `null` | no |
+| <a name="input_rule_name"></a> [rule\_name](#input\_rule\_name) | An display name for a backup rule | `string` | `null` | no |
+| <a name="input_rule_recovery_point_tags"></a> [rule\_recovery\_point\_tags](#input\_rule\_recovery\_point\_tags) | Metadata that you can assign to help organize the resources that you create | `map(string)` | `{}` | no |
+| <a name="input_rule_schedule"></a> [rule\_schedule](#input\_rule\_schedule) | A CRON expression specifying when AWS Backup initiates a backup job | `string` | `null` | no |
+| <a name="input_rule_start_window"></a> [rule\_start\_window](#input\_rule\_start\_window) | The amount of time in minutes before beginning a backup | `number` | `null` | no |
+| <a name="input_rules"></a> [rules](#input\_rules) | A list of rules mapping rule configurations for a backup plan | `any` | `[]` | no |
+| <a name="input_selection_name"></a> [selection\_name](#input\_selection\_name) | The display name of a resource selection document | `string` | `null` | no |
+| <a name="input_selection_resources"></a> [selection\_resources](#input\_selection\_resources) | A list of strings that either contain Amazon Resource Names (ARNs) or match patterns of resources to assign to a backup plan | `list(string)` | `[]` | no |
+| <a name="input_selection_tag_key"></a> [selection\_tag\_key](#input\_selection\_tag\_key) | The key in a key-value pair | `string` | `null` | no |
+| <a name="input_selection_tag_type"></a> [selection\_tag\_type](#input\_selection\_tag\_type) | An operation, such as StringEquals, that is applied to a key-value pair used to filter resources in a selection | `string` | `null` | no |
+| <a name="input_selection_tag_value"></a> [selection\_tag\_value](#input\_selection\_tag\_value) | The value in a key-value pair | `string` | `null` | no |
+| <a name="input_selection_tags"></a> [selection\_tags](#input\_selection\_tags) | A list of selection tags map | `list(any)` | `[]` | no |
+| <a name="input_sns_topic_arn"></a> [sns\_topic\_arn](#input\_sns\_topic\_arn) | The Amazon Resource Name (ARN) that specifies the topic for a backup vault’s events | `string` | `null` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags to assign to the resource | `map(string)` | `{}` | no |
+| <a name="input_vault_kms_key_arn"></a> [vault\_kms\_key\_arn](#input\_vault\_kms\_key\_arn) | The server-side encryption key that is used to protect your backups | `string` | `null` | no |
+| <a name="input_vault_name"></a> [vault\_name](#input\_vault\_name) | Name of the backup vault to create. If not given, AWS use default | `string` | `null` | no |
+| <a name="input_vault_sns_kms_key_arn"></a> [vault\_sns\_kms\_key\_arn](#input\_vault\_sns\_kms\_key\_arn) | The server-side encryption key that is used to protect SNS messages for backups | `string` | `null` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| backup\_plan\_arn | The Amazon Resource Name (ARN) that identifies the backup plan |
-| backup\_plan\_id | The name of the backup plan |
-| backup\_plan\_version | Unique, randomly generated, Unicode, UTF-8 encoded string that serves as the version ID of the backup plan. |
-| backup\_selection\_id | The identifier of the backup selection |
-| backup\_vault\_arn | The Amazon Resource Name (ARN) that identifies the AWS Backup Vault |
-| backup\_vault\_id | The name of the AWS Backup Vault |
-| backup\_vault\_recovery\_points | The number of recovery points that are stored in a backup vault |
+| <a name="output_backup_plan_arn"></a> [backup\_plan\_arn](#output\_backup\_plan\_arn) | The Amazon Resource Name (ARN) that identifies the backup plan |
+| <a name="output_backup_plan_id"></a> [backup\_plan\_id](#output\_backup\_plan\_id) | The name of the backup plan |
+| <a name="output_backup_plan_version"></a> [backup\_plan\_version](#output\_backup\_plan\_version) | Unique, randomly generated, Unicode, UTF-8 encoded string that serves as the version ID of the backup plan. |
+| <a name="output_backup_selection_id"></a> [backup\_selection\_id](#output\_backup\_selection\_id) | The identifier of the backup selection |
+| <a name="output_backup_sns_topic_arn"></a> [backup\_sns\_topic\_arn](#output\_backup\_sns\_topic\_arn) | The Amazon Resource Name (ARN) that specifies the topic for a backup vault’s events |
+| <a name="output_backup_vault_arn"></a> [backup\_vault\_arn](#output\_backup\_vault\_arn) | The Amazon Resource Name (ARN) that identifies the AWS Backup Vault |
+| <a name="output_backup_vault_events"></a> [backup\_vault\_events](#output\_backup\_vault\_events) | An array of events that indicate the status of jobs to back up resources to the backup vault. |
+| <a name="output_backup_vault_id"></a> [backup\_vault\_id](#output\_backup\_vault\_id) | The name of the AWS Backup Vault |
+| <a name="output_backup_vault_recovery_points"></a> [backup\_vault\_recovery\_points](#output\_backup\_vault\_recovery\_points) | The number of recovery points that are stored in a backup vault |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## License
