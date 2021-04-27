@@ -86,7 +86,7 @@ resource "aws_backup_selection" "main" {
 # SNS Backup Notifications
 #######
 resource "aws_sns_topic" "main" {
-  count = var.sns_topic_arn != null ? 0 : 1
+  count = var.create_sns_topic ? 1 : 0
 
   name              = var.vault_name != null ? "${aws_backup_vault.main[0].name}-events" : "backup-vault-events"
   kms_master_key_id = var.vault_sns_kms_key_arn
@@ -111,7 +111,7 @@ data "aws_iam_policy_document" "sns_policy" {
       ]
     }
 
-    resources = var.sns_topic_arn != null ? [var.sns_topic_arn] : [aws_sns_topic.main[0].arn]
+    resources = var.create_sns_topic ? [aws_sns_topic.main[0].arn] : [var.sns_topic_arn]
   }
 }
 

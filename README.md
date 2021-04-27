@@ -124,6 +124,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_advanced_backup_settings"></a> [advanced\_backup\_settings](#input\_advanced\_backup\_settings) | An object that specifies backup options for each resource type | `any` | `[]` | no |
 | <a name="input_backup_vault_events"></a> [backup\_vault\_events](#input\_backup\_vault\_events) | An array of events that indicate the status of jobs to back up resources to the backup vault. | `list(string)` | <pre>[<br>  "BACKUP_JOB_STARTED",<br>  "BACKUP_JOB_COMPLETED",<br>  "BACKUP_JOB_SUCCESSFUL",<br>  "BACKUP_JOB_FAILED",<br>  "BACKUP_JOB_EXPIRED",<br>  "RESTORE_JOB_STARTED",<br>  "RESTORE_JOB_COMPLETED",<br>  "RESTORE_JOB_SUCCESSFUL",<br>  "RESTORE_JOB_FAILED",<br>  "COPY_JOB_STARTED",<br>  "COPY_JOB_SUCCESSFUL",<br>  "COPY_JOB_FAILED",<br>  "RECOVERY_POINT_MODIFIED",<br>  "BACKUP_PLAN_CREATED",<br>  "BACKUP_PLAN_MODIFIED"<br>]</pre> | no |
+| <a name="input_create_sns_topic"></a> [create\_sns\_topic](#input\_create\_sns\_topic) | Create SNS Topic | `bool` | `true` | no |
 | <a name="input_enable_sns_notifications"></a> [enable\_sns\_notifications](#input\_enable\_sns\_notifications) | Enable Backup Vault Notifications | `bool` | `false` | no |
 | <a name="input_iam_role_name"></a> [iam\_role\_name](#input\_iam\_role\_name) | Name of IAM Role to associate to the Backup Plan | `string` | `null` | no |
 | <a name="input_plan_name"></a> [plan\_name](#input\_plan\_name) | The display name of a backup plan | `string` | n/a | yes |

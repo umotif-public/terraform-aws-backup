@@ -145,6 +145,12 @@ variable "enable_sns_notifications" {
   default     = false
 }
 
+variable "create_sns_topic" {
+  description = "Create SNS Topic"
+  type        = bool
+  default     = true
+}
+
 variable "sns_topic_arn" {
   description = "The Amazon Resource Name (ARN) that specifies the topic for a backup vault’s events"
   type        = string
