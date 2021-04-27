@@ -47,7 +47,7 @@ output "backup_selection_id" {
 ####
 output "backup_sns_topic_arn" {
   description = "The Amazon Resource Name (ARN) that specifies the topic for a backup vault’s events"
-  value       = var.sns_topic_arn != null ? null : concat(aws_sns_topic.main[*].arn, [""])[0]
+  value       = var.create_sns_topic ? concat(aws_sns_topic.main[*].arn, [""])[0] : var.sns_topic_arn
 }
 
 output "backup_vault_events" {
