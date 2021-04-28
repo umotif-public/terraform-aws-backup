@@ -86,7 +86,7 @@ resource "aws_backup_selection" "main" {
 # SNS Backup Notifications
 #######
 resource "aws_sns_topic" "main" {
-  count = var.create_sns_topic ? 1 : 0
+  count = var.create_sns_topic && var.enable_sns_notifications ? 1 : 0
 
   name              = var.vault_name != null ? "${aws_backup_vault.main[0].name}-events" : "backup-vault-events"
   kms_master_key_id = var.vault_sns_kms_key_arn
