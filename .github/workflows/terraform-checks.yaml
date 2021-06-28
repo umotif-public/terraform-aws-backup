@@ -1,12 +1,13 @@
 name: Lint and Validate
 
 on:
-  push:
-    branches:
-      - '!master'
   pull_request:
     branches:
-      - master
+      - main
+  workflow_dispatch:
+
+env:
+  TF_VERSION: 0.13.0
 
 jobs:
   fmt:
@@ -19,7 +20,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 0.14.10
+          terraform_version: ${{ env.TF_VERSION }}
           terraform_wrapper: false
 
       - name: Terraform fmt
@@ -35,7 +36,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 0.14.10
+          terraform_version: ${{ env.TF_VERSION }}
           terraform_wrapper: false
 
       - name: Terraform init

@@ -8,14 +8,16 @@ Terraform module to provision [AWS Backup](https://aws.amazon.com/backup/) resou
 
 ## Terraform versions
 
-Terraform 0.13. Pin module version to `~> v1.0`. Submit pull-requests to `master` branch.
+Terraform 0.13+. Pin module version to `~> v1.4`. Submit pull-requests to `main` branch. Prior versions on `master` branch will need `~> v1.3`.
 
 ## Usage
+
+**If referring directly to the code instead of a pinned version, take note that from release 1.4.0 all future changes will only be made to the main branch.**
 
 ```hcl
 module "backup" {
   source = "umotif-public/backup/aws"
-  version = "~> 1.0"
+  version = "~> 1.4"
 
   vault_name        = "test-rds-aurora"
   vault_kms_key_arn = "arn:aws:kms:eu-west-1:1111111111:key/07a8a813-fcc9-4d7f-a982648d9c25"
