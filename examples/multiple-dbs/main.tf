@@ -95,8 +95,9 @@ module "backup" {
   source = "../.."
 
   # Create a Vault
-  vault_name        = "${var.name_prefix}-rds-aurora"
-  vault_kms_key_arn = data.aws_kms_key.backup.arn
+  vault_name          = "${var.name_prefix}-rds-aurora"
+  vault_kms_key_arn   = data.aws_kms_key.backup.arn
+  vault_force_destroy = true
 
   tags = {
     Environment = "test"
