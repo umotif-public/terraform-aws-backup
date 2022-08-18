@@ -118,15 +118,21 @@ resource "aws_iam_role" "main" {
   tags = var.tags
 }
 
-resource "aws_iam_role_policy_attachment" "main_role_policy_attach" {
+resource "aws_iam_role_policy_attachment" "main_role_backup_policy_attach" {
   policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup"
+  role       = aws_iam_role.main.name
+}
+
+resource "aws_iam_role_policy_attachment" "main_role_restore_policy_attach" {
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForRestores"
   role       = aws_iam_role.main.name
 }
 
 resource "aws_iam_policy" "main_custom_policy" {
   description = "AWS Backup Tag policy"
+  policy      = data.aws_iam_policy_document.main_custom_policy.json
 
-  policy = data.aws_iam_policy_document.main_custom_policy.json
+  tags = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "main_custom_policy_attach" {
