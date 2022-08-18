@@ -8,7 +8,7 @@ Terraform module to provision [AWS Backup](https://aws.amazon.com/backup/) resou
 
 ## Terraform versions
 
-Terraform 0.13+. Pin module version to `~> v1.4`. Submit pull-requests to `main` branch. Prior versions on `master` branch will need `~> v1.3`.
+Terraform 1.0+. Pin module version to `~> v1.5`. Submit pull-requests to `main` branch. Prior versions on `master` branch will need `~> v1.3`.
 
 ## Usage
 
@@ -17,7 +17,7 @@ Terraform 0.13+. Pin module version to `~> v1.4`. Submit pull-requests to `main`
 ```hcl
 module "backup" {
   source = "umotif-public/backup/aws"
-  version = "~> 1.4"
+  version = "~> 1.5"
 
   vault_name        = "test-rds-aurora"
   vault_kms_key_arn = "arn:aws:kms:eu-west-1:1111111111:key/07a8a813-fcc9-4d7f-a982648d9c25"
@@ -66,7 +66,7 @@ module "backup" {
 
 ## Assumptions
 
-Module is to be used with Terraform > 0.13.
+Module is to be used with Terraform > 1.0.
 
 ## Examples
 
@@ -79,22 +79,21 @@ Module is to be used with Terraform > 0.13.
 
 Module managed by:
 
-* [Marcin Cuber](https://github.com/marcincuber) ([LinkedIn](https://www.linkedin.com/in/marcincuber/))
-* [Abdul Wahid](https://github.com/Ohid25) ([LinkedIn](https://www.linkedin.com/in/abdul-wahid/))
+* Module managed by [uMotif](https://github.com/umotif-public/).
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.11 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.11 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.0.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.11 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.0.0 |
 
 ## Modules
 
@@ -111,7 +110,8 @@ No modules.
 | [aws_iam_policy.main_custom_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_role.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy_attachment.main_custom_policy_attach](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.main_role_policy_attach](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.main_role_backup_policy_attach](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.main_role_restore_policy_attach](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_sns_topic.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic) | resource |
 | [aws_sns_topic_policy.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic_policy) | resource |
 | [aws_iam_policy_document.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -148,6 +148,7 @@ No modules.
 | <a name="input_selection_tags"></a> [selection\_tags](#input\_selection\_tags) | A list of selection tags map | `list(any)` | `[]` | no |
 | <a name="input_sns_topic_arn"></a> [sns\_topic\_arn](#input\_sns\_topic\_arn) | The Amazon Resource Name (ARN) that specifies the topic for a backup vault’s events | `string` | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags to assign to the resource | `map(string)` | `{}` | no |
+| <a name="input_vault_force_destroy"></a> [vault\_force\_destroy](#input\_vault\_force\_destroy) | A boolean that indicates that all recovery points stored in the vault are deleted so that the vault can be destroyed without error. | `bool` | `false` | no |
 | <a name="input_vault_kms_key_arn"></a> [vault\_kms\_key\_arn](#input\_vault\_kms\_key\_arn) | The server-side encryption key that is used to protect your backups | `string` | `null` | no |
 | <a name="input_vault_name"></a> [vault\_name](#input\_vault\_name) | Name of the backup vault to create. If not given, AWS use default | `string` | `null` | no |
 | <a name="input_vault_sns_kms_key_arn"></a> [vault\_sns\_kms\_key\_arn](#input\_vault\_sns\_kms\_key\_arn) | The server-side encryption key that is used to protect SNS messages for backups | `string` | `null` | no |

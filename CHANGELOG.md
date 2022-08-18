@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 <a name="unreleased"></a>
 ## [Unreleased]
 
-- Migrate to main branch + manual trigger to pipeline
+
+
+<a name="1.4.0"></a>
+## [1.4.0] - 2021-06-28
+
+- Migrate to main branch + manual trigger to pipeline ([#12](https://github.com/umotif-public/terraform-aws-backup/issues/12))
 
 
 <a name="1.3.1"></a>
@@ -51,7 +56,8 @@ All notable changes to this project will be documented in this file.
 - Initial commit
 
 
-[Unreleased]: https://github.com/umotif-public/terraform-aws-backup/compare/1.3.1...HEAD
+[Unreleased]: https://github.com/umotif-public/terraform-aws-backup/compare/1.4.0...HEAD
+[1.4.0]: https://github.com/umotif-public/terraform-aws-backup/compare/1.3.1...1.4.0
 [1.3.1]: https://github.com/umotif-public/terraform-aws-backup/compare/1.3.0...1.3.1
 [1.3.0]: https://github.com/umotif-public/terraform-aws-backup/compare/1.2.0...1.3.0
 [1.2.0]: https://github.com/umotif-public/terraform-aws-backup/compare/1.1.0...1.2.0
