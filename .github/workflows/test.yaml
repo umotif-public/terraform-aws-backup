@@ -1,14 +1,13 @@
 name: Terratest
 
 on:
-  pull_request:
-    branches:
-      - main
+  pull_request_review:
+    types: [submitted, edited]
   workflow_dispatch:
 
 env:
-  TF_VERSION: 0.13.0
-  GO_VERSION: 1.16.5
+  TF_VERSION: 1.1.7
+  GO_VERSION: 1.19
 
 jobs:
   terratest:
@@ -28,20 +27,12 @@ jobs:
     - name: Install dependencies
       run: |
         go mod download
-        go get -u golang.org/x/lint/golint
         go get github.com/gruntwork-io/terratest/modules/retry@v0.31.0
-      working-directory: ${{ env.working-directory }}
-    - name: Run checks
-      run: |
-        go vet .
-        golint .
       working-directory: ${{ env.working-directory }}
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: eu-west-1
         role-skip-session-tagging: true
         role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}

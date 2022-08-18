@@ -1,13 +1,12 @@
 name: Lint and Validate
 
 on:
-  pull_request:
-    branches:
-      - main
+  pull_request_review:
+    types: [submitted, edited]
   workflow_dispatch:
 
 env:
-  TF_VERSION: 0.13.0
+  TF_VERSION: 1.1.7
 
 jobs:
   fmt:
