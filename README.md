@@ -8,7 +8,7 @@ Terraform module to provision [AWS Backup](https://aws.amazon.com/backup/) resou
 
 ## Terraform versions
 
-Terraform 0.13+. Pin module version to `~> v1.4`. Submit pull-requests to `main` branch. Prior versions on `master` branch will need `~> v1.3`.
+Terraform 1.0+. Pin module version to `~> v1.5`. Submit pull-requests to `main` branch. Prior versions on `master` branch will need `~> v1.3`.
 
 ## Usage
 
@@ -17,7 +17,7 @@ Terraform 0.13+. Pin module version to `~> v1.4`. Submit pull-requests to `main`
 ```hcl
 module "backup" {
   source = "umotif-public/backup/aws"
-  version = "~> 1.4"
+  version = "~> 1.5"
 
   vault_name        = "test-rds-aurora"
   vault_kms_key_arn = "arn:aws:kms:eu-west-1:1111111111:key/07a8a813-fcc9-4d7f-a982648d9c25"
@@ -66,7 +66,7 @@ module "backup" {
 
 ## Assumptions
 
-Module is to be used with Terraform > 0.13.
+Module is to be used with Terraform > 1.0.
 
 ## Examples
 
@@ -86,14 +86,14 @@ Module managed by:
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.11 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.11 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.0.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.11 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.0.0 |
 
 ## Modules
 
