@@ -32,3 +32,8 @@ output "backup_selection_id" {
   description = "The identifier of the backup selection"
   value       = module.backup.backup_selection_id
 }
+
+output "backup_vault_iam_role_name" {
+  description = "The name of the backup IAM role"
+  value = module.backup.backup_vault_iam_role_name
+}

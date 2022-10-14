@@ -56,3 +56,11 @@ output "backup_vault_events" {
     for events in aws_backup_vault_notifications.main[*] : events.backup_vault_events
   if var.enable_sns_notifications])
 }
+
+#####
+# AWS Backup IAM role Outputs
+####
+output "backup_vault_iam_role_name" {
+  description = "The name of the backup IAM role"
+  value       = aws_iam_role.main.name
+}
