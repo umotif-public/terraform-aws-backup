@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 <a name="unreleased"></a>
 ## [Unreleased]
 
+- DEVOPS-1330 Added output for IAM Role name
+
+
+<a name="1.5.0"></a>
+## [1.5.0] - 2022-08-18
+
+- Added force destroy feature + new restore policy ([#13](https://github.com/umotif-public/terraform-aws-backup/issues/13))
 
 
 <a name="1.4.0"></a>
@@ -56,7 +63,8 @@ All notable changes to this project will be documented in this file.
 - Initial commit
 
 
-[Unreleased]: https://github.com/umotif-public/terraform-aws-backup/compare/1.4.0...HEAD
+[Unreleased]: https://github.com/umotif-public/terraform-aws-backup/compare/1.5.0...HEAD
+[1.5.0]: https://github.com/umotif-public/terraform-aws-backup/compare/1.4.0...1.5.0
 [1.4.0]: https://github.com/umotif-public/terraform-aws-backup/compare/1.3.1...1.4.0
 [1.3.1]: https://github.com/umotif-public/terraform-aws-backup/compare/1.3.0...1.3.1
 [1.3.0]: https://github.com/umotif-public/terraform-aws-backup/compare/1.2.0...1.3.0
