@@ -64,3 +64,8 @@ output "backup_vault_iam_role_name" {
   description = "The name of the backup IAM role"
   value       = aws_iam_role.main.name
 }
+
+output "backup_vault_iam_role_arn" {
+  description = "The ARN of the backup IAM role"
+  value       = aws_iam_role.main.arn
+}

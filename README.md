@@ -93,7 +93,7 @@ Module managed by:
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.0.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.35.0 |
 
 ## Modules
 
@@ -151,6 +151,7 @@ No modules.
 | <a name="output_backup_sns_topic_arn"></a> [backup\_sns\_topic\_arn](#output\_backup\_sns\_topic\_arn) | The Amazon Resource Name (ARN) that specifies the topic for a backup vault’s events |
 | <a name="output_backup_vault_arn"></a> [backup\_vault\_arn](#output\_backup\_vault\_arn) | The Amazon Resource Name (ARN) that identifies the AWS Backup Vault |
 | <a name="output_backup_vault_events"></a> [backup\_vault\_events](#output\_backup\_vault\_events) | An array of events that indicate the status of jobs to back up resources to the backup vault. |
+| <a name="output_backup_vault_iam_role_arn"></a> [backup\_vault\_iam\_role\_arn](#output\_backup\_vault\_iam\_role\_arn) | The ARN of the backup IAM role |
 | <a name="output_backup_vault_iam_role_name"></a> [backup\_vault\_iam\_role\_name](#output\_backup\_vault\_iam\_role\_name) | The name of the backup IAM role |
 | <a name="output_backup_vault_id"></a> [backup\_vault\_id](#output\_backup\_vault\_id) | The name of the AWS Backup Vault |
 | <a name="output_backup_vault_recovery_points"></a> [backup\_vault\_recovery\_points](#output\_backup\_vault\_recovery\_points) | The number of recovery points that are stored in a backup vault |
