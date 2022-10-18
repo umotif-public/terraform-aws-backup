@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 <a name="unreleased"></a>
 ## [Unreleased]
 
-- DEVOPS-1330 Added output for IAM Role name
+
+
+<a name="1.5.1"></a>
+## [1.5.1] - 2022-10-14
+
+- DEVOPS-1330 Added output for IAM Role name ([#14](https://github.com/umotif-public/terraform-aws-backup/issues/14))
 
 
 <a name="1.5.0"></a>
@@ -63,7 +68,8 @@ All notable changes to this project will be documented in this file.
 - Initial commit
 
 
-[Unreleased]: https://github.com/umotif-public/terraform-aws-backup/compare/1.5.0...HEAD
+[Unreleased]: https://github.com/umotif-public/terraform-aws-backup/compare/1.5.1...HEAD
+[1.5.1]: https://github.com/umotif-public/terraform-aws-backup/compare/1.5.0...1.5.1
 [1.5.0]: https://github.com/umotif-public/terraform-aws-backup/compare/1.4.0...1.5.0
 [1.4.0]: https://github.com/umotif-public/terraform-aws-backup/compare/1.3.1...1.4.0
 [1.3.1]: https://github.com/umotif-public/terraform-aws-backup/compare/1.3.0...1.3.1
