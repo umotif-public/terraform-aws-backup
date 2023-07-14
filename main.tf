@@ -74,7 +74,8 @@ resource "aws_backup_selection" "main" {
   name         = var.selection_name
   plan_id      = aws_backup_plan.main.id
 
-  resources = var.selection_resources
+  resources     = var.selection_resources
+  not_resources = var.selection_not_resources
 
   dynamic "selection_tag" {
     for_each = var.selection_tags
