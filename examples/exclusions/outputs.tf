@@ -39,5 +39,6 @@ output "backup_vault_iam_role_name" {
 }
 
 output "backup_vault_iam_role_arn" {
-  value = module.backup.backup_vault_iam_role_name.arn
+  description = "The ARN of the backup IAM role"
+  value       = module.backup.backup_vault_iam_role_arn
 }

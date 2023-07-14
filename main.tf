@@ -18,6 +18,7 @@ resource "aws_backup_plan" "main" {
 
   dynamic "rule" {
     for_each = var.rules
+
     content {
       rule_name                = lookup(rule.value, "name")
       target_vault_name        = var.vault_name != null ? aws_backup_vault.main[0].name : lookup(rule.value, "target_vault_name", "Default")
@@ -29,6 +30,7 @@ resource "aws_backup_plan" "main" {
 
       dynamic "lifecycle" {
         for_each = length(lookup(rule.value, "lifecycle")) == 0 ? [] : [lookup(rule.value, "lifecycle", {})]
+
         content {
           cold_storage_after = lookup(lifecycle.value, "cold_storage_after", 0)
           delete_after       = lookup(lifecycle.value, "delete_after", 90)
@@ -37,6 +39,7 @@ resource "aws_backup_plan" "main" {
 
       dynamic "copy_action" {
         for_each = length(lookup(rule.value, "copy_action", {})) == 0 ? [] : [lookup(rule.value, "copy_action", {})]
+
         content {
           destination_vault_arn = lookup(copy_action.value, "destination_vault_arn", null)
 
@@ -71,7 +74,8 @@ resource "aws_backup_selection" "main" {
   name         = var.selection_name
   plan_id      = aws_backup_plan.main.id
 
-  resources = var.selection_resources
+  resources     = var.selection_resources
+  not_resources = var.selection_not_resources
 
   dynamic "selection_tag" {
     for_each = var.selection_tags
@@ -125,6 +129,16 @@ resource "aws_iam_role_policy_attachment" "main_role_backup_policy_attach" {
 
 resource "aws_iam_role_policy_attachment" "main_role_restore_policy_attach" {
   policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForRestores"
+  role       = aws_iam_role.main.name
+}
+
+resource "aws_iam_role_policy_attachment" "main_role_s3_backup_policy_attach" {
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/AWSBackupServiceRolePolicyForS3Backup"
+  role       = aws_iam_role.main.name
+}
+
+resource "aws_iam_role_policy_attachment" "main_role_s3_restore_policy_attach" {
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/AWSBackupServiceRolePolicyForS3Restore"
   role       = aws_iam_role.main.name
 }
 

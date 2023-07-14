@@ -30,6 +30,12 @@ variable "selection_resources" {
   default     = []
 }
 
+variable "selection_not_resources" {
+  description = "An array of strings that either contain Amazon Resource Names (ARNs) or match patterns of resources to exclude from a backup plan."
+  type        = list(string)
+  default     = []
+}
+
 variable "selection_tags" {
   description = "A list of selection tags map"
   type        = list(any)
