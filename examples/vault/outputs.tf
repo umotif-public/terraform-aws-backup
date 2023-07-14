@@ -39,5 +39,5 @@ output "backup_vault_iam_role_name" {
 }
 
 output "backup_vault_iam_role_arn" {
-  output = module.backup.backup_vault_iam_role_name.arn
+  value = module.backup.backup_vault_iam_role_name.arn
 }

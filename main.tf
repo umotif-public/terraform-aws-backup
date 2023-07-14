@@ -18,6 +18,7 @@ resource "aws_backup_plan" "main" {
 
   dynamic "rule" {
     for_each = var.rules
+
     content {
       rule_name                = lookup(rule.value, "name")
       target_vault_name        = var.vault_name != null ? aws_backup_vault.main[0].name : lookup(rule.value, "target_vault_name", "Default")
@@ -29,6 +30,7 @@ resource "aws_backup_plan" "main" {
 
       dynamic "lifecycle" {
         for_each = length(lookup(rule.value, "lifecycle")) == 0 ? [] : [lookup(rule.value, "lifecycle", {})]
+
         content {
           cold_storage_after = lookup(lifecycle.value, "cold_storage_after", 0)
           delete_after       = lookup(lifecycle.value, "delete_after", 90)
@@ -37,6 +39,7 @@ resource "aws_backup_plan" "main" {
 
       dynamic "copy_action" {
         for_each = length(lookup(rule.value, "copy_action", {})) == 0 ? [] : [lookup(rule.value, "copy_action", {})]
+
         content {
           destination_vault_arn = lookup(copy_action.value, "destination_vault_arn", null)
 
