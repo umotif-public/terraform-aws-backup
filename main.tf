@@ -132,6 +132,16 @@ resource "aws_iam_role_policy_attachment" "main_role_restore_policy_attach" {
   role       = aws_iam_role.main.name
 }
 
+resource "aws_iam_role_policy_attachment" "main_role_s3_backup_policy_attach" {
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/AWSBackupServiceRolePolicyForS3Backup"
+  role       = aws_iam_role.main.name
+}
+
+resource "aws_iam_role_policy_attachment" "main_role_s3_restore_policy_attach" {
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/AWSBackupServiceRolePolicyForS3Restore"
+  role       = aws_iam_role.main.name
+}
+
 resource "aws_iam_policy" "main_custom_policy" {
   description = "AWS Backup Tag policy"
   policy      = data.aws_iam_policy_document.main_custom_policy.json
